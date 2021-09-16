@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  SoundBook
 //
-//  Created by Nahalia do Valle Papst on 16/09/21.
+//  Created by Nathalia do Valle Papst on 16/09/21.
 //
 
 import UIKit
