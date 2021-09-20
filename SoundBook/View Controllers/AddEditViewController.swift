@@ -11,6 +11,8 @@ class AddEditViewController: UIViewController {
     let addImageButton = UIButton()
     let photoImage = UIImageView()
     let addPhotoImage = UIImageView()
+    let nomeLabel = UILabel()
+    let textFieldNome = UITextField()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,7 +72,34 @@ class AddEditViewController: UIViewController {
         addPhotoImage.heightAnchor.constraint(equalToConstant: 27).isActive = true
         addPhotoImage.widthAnchor.constraint(equalToConstant: 27).isActive = true
         
+        // Configs nome label
         
+        nomeLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        nomeLabel.text = "Nome do objeto"
+        view.addSubview(nomeLabel)
+        
+        nomeLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        nomeLabel.topAnchor.constraint(equalTo: addImageButton.bottomAnchor, constant: 8).isActive = true
+        nomeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25).isActive = true
+        nomeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        
+        // Configs textField
+        
+        textFieldNome.placeholder = "Ex: Liquidificador"
+        textFieldNome.backgroundColor = .systemGray5
+        textFieldNome.layer.cornerRadius = 10
+//        textFieldNome.layer.borderWidth = 1
+//        textFieldNome.layer.borderColor = #colorLiteral(red: 0.8982069492, green: 0.8977206349, blue: 0.919462502, alpha: 1)
+        view.addSubview(textFieldNome)
+        
+        textFieldNome.translatesAutoresizingMaskIntoConstraints = false
+        
+        textFieldNome.topAnchor.constraint(equalTo: nomeLabel.bottomAnchor, constant: 8).isActive = true
+        textFieldNome.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+        textFieldNome.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        
+        textFieldNome.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         
         
