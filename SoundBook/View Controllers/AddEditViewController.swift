@@ -14,8 +14,10 @@ class AddEditViewController: UIViewController {
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: nil)
         navigationItem.leftBarButtonItem?.tintColor = .red
+        
         title = "Adicionar"
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: nil)
         
         view.backgroundColor = .orange
         // Do any additional setup after loading the view.
