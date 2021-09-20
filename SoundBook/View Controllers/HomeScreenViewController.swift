@@ -10,6 +10,7 @@ import UIKit
 class HomeScreenViewController: UIViewController {
 
     var buttonEdit: UIBarButtonItem!
+    var buttonAdd: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,11 +19,17 @@ class HomeScreenViewController: UIViewController {
         buttonEdit = UIBarButtonItem(title: "Editar", style: UIBarButtonItem.Style.plain, target: self, action: #selector(editList))
         navigationItem.leftBarButtonItem = buttonEdit!
         
+        buttonAdd = UIBarButtonItem(image: UIImage(systemName: "plus"), style: UIBarButtonItem.Style.plain, target: self, action: #selector(addObject))
+        navigationItem.rightBarButtonItem = buttonAdd!
         
         // Do any additional setup after loading the view.
     }
 
     @objc func editList(){
+        
+    }
+    
+    @objc func addObject(){
         
     }
 
