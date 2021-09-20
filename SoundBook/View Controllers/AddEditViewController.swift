@@ -12,7 +12,11 @@ class AddEditViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: nil)
+        navigationItem.leftBarButtonItem?.tintColor = .red
         title = "Adicionar"
+        
+        
         view.backgroundColor = .orange
         // Do any additional setup after loading the view.
     }
