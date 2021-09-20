@@ -12,6 +12,8 @@ class AddEditViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "Adicionar"
+        view.backgroundColor = .orange
         // Do any additional setup after loading the view.
     }
     
