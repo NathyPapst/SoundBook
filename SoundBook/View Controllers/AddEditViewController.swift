@@ -30,8 +30,9 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         return table
     }()
     
-    
+    let circle = UIImageView()
     let microfoneButton = UIButton()
+    let microfone = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -133,10 +134,18 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         instrucaoLabel.textAlignment = .center
         view.addSubview(instrucaoLabel)
         
-        microfoneButton.backgroundColor = UIColor(named: "orangeColor")
-        microfoneButton.setImage(UIImage(systemName: "mic"), for: .normal)
-        microfoneButton.layer.cornerRadius = 55
+        microfoneButton.layer.cornerRadius = 50
+        microfoneButton.addTarget(self, action: #selector(medirDecibel), for: .touchUpInside)
         view.addSubview(microfoneButton)
+        
+        circle.image = UIImage(systemName: "circle.fill")
+        circle.tintColor = UIColor(named: "orangeColor")
+        view.addSubview(circle)
+        
+        
+        microfone.image = UIImage(systemName: "mic")
+        microfone.tintColor = .systemGray6
+        view.addSubview(microfone)
         
         addConstraints()
     }
@@ -144,6 +153,10 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     // Funcao ativida pelo botao de imagem
     @objc func escolherImagem() {
         print("Alo mundo")
+    }
+    
+    @objc func medirDecibel() {
+        print("medindo")
     }
     
     // Funcao para adicionar constraint de TODOS os elementos
@@ -219,13 +232,27 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         instrucaoLabel.translatesAutoresizingMaskIntoConstraints = false
         instrucaoLabel.topAnchor.constraint(equalTo: classificacaoCardLabel.bottomAnchor, constant: 24).isActive = true
-        instrucaoLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        instrucaoLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        instrucaoLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
+        instrucaoLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
+        
+        circle.translatesAutoresizingMaskIntoConstraints = false
+        circle.topAnchor.constraint(equalTo: instrucaoLabel.bottomAnchor, constant: view.frame.height*0.03).isActive = true
+        circle.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        circle.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15).isActive = true
+        circle.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15).isActive = true
         
         microfoneButton.translatesAutoresizingMaskIntoConstraints = false
-        microfoneButton.topAnchor.constraint(equalTo: instrucaoLabel.bottomAnchor, constant: 36).isActive = true
-        microfoneButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15).isActive = true
-        microfoneButton.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15).isActive = true
+        microfoneButton.centerXAnchor.constraint(equalTo: circle.centerXAnchor).isActive = true
+        microfoneButton.centerYAnchor.constraint(equalTo: circle.centerYAnchor).isActive = true
+        microfoneButton.heightAnchor.constraint(equalTo: circle.heightAnchor).isActive = true
+        microfoneButton.widthAnchor.constraint(equalTo: circle.widthAnchor).isActive = true
+        
+        microfone.translatesAutoresizingMaskIntoConstraints = false
+        microfone.centerXAnchor.constraint(equalTo: circle.centerXAnchor).isActive = true
+        microfone.centerYAnchor.constraint(equalTo: circle.centerYAnchor).isActive = true
+        microfone.heightAnchor.constraint(equalTo: circle.heightAnchor, multiplier: 0.45).isActive = true
+        microfone.widthAnchor.constraint(equalTo: circle.widthAnchor, multiplier: 0.4).isActive = true
+        
     }
     
     // Funcao que escolhe quantidade de celulas
@@ -247,16 +274,5 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         return UITableViewCell()
     }
-    
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
 }
