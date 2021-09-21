@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		17075CA926FA782000859380 /* CellStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17075CA826FA782000859380 /* CellStyle.swift */; };
 		E93E8D0126F3D16500D60D88 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93E8D0026F3D16500D60D88 /* AppDelegate.swift */; };
 		E93E8D0326F3D16500D60D88 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93E8D0226F3D16500D60D88 /* SceneDelegate.swift */; };
 		E93E8D0526F3D16500D60D88 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93E8D0426F3D16500D60D88 /* HomeScreenViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		17075CA826FA782000859380 /* CellStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellStyle.swift; sourceTree = "<group>"; };
 		E93E8CFD26F3D16500D60D88 /* SoundBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoundBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93E8D0026F3D16500D60D88 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E93E8D0226F3D16500D60D88 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -39,6 +41,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		17075CA726FA77FE00859380 /* Cell Style  */ = {
+			isa = PBXGroup;
+			children = (
+				17075CA826FA782000859380 /* CellStyle.swift */,
+			);
+			path = "Cell Style ";
+			sourceTree = "<group>";
+		};
 		E93E8CF426F3D16500D60D88 = {
 			isa = PBXGroup;
 			children = (
@@ -58,6 +68,7 @@
 		E93E8CFF26F3D16500D60D88 /* SoundBook */ = {
 			isa = PBXGroup;
 			children = (
+				17075CA726FA77FE00859380 /* Cell Style  */,
 				E93E8D1926F3D9B800D60D88 /* Core Data */,
 				E93E8D1726F3D65B00D60D88 /* Delegates */,
 				E93E8D1826F3D98800D60D88 /* View Controllers */,
@@ -168,6 +179,7 @@
 				E93E8D0126F3D16500D60D88 /* AppDelegate.swift in Sources */,
 				E93E8D0B26F3D16500D60D88 /* SoundBook.xcdatamodeld in Sources */,
 				E93E8D0326F3D16500D60D88 /* SceneDelegate.swift in Sources */,
+				17075CA926FA782000859380 /* CellStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,7 +319,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B47883TN4D;
+				DEVELOPMENT_TEAM = HPQ38SJ3W9;
 				INFOPLIST_FILE = SoundBook/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -326,7 +338,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B47883TN4D;
+				DEVELOPMENT_TEAM = HPQ38SJ3W9;
 				INFOPLIST_FILE = SoundBook/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

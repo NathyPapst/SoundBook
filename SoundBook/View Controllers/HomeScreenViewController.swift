@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeScreenViewController: UIViewController, UISearchBarDelegate {
+class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate {
 
     var buttonEdit: UIBarButtonItem!
     var buttonAdd: UIBarButtonItem!
@@ -18,11 +18,19 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate {
     var moderateLabel: UILabel = UILabel()
     var lowLabel: UILabel = UILabel()
     var myObjLabel: UILabel = UILabel()
-    lazy var searchBar: UISearchBar = UISearchBar()
+    var searchBar: UISearchBar = UISearchBar()
+    let tableView: UITableView = {
+        let table = UITableView()
+      table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+      return table
+    }()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.backgroundColor = .clear
         //cria a segmented
         let items = ["Todos", "Alto", "Médio", "Baixo"]
         let segmentedControlCustom = UISegmentedControl(items: items)
@@ -84,13 +92,12 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate {
         myObjLabel.textColor = UIColor(named: "textColor")
         myObjLabel.font = .systemFont(ofSize: 28, weight: .semibold)
         
-        searchBar.searchBarStyle = UISearchBar.Style.default
+        searchBar.searchBarStyle = UISearchBar.Style.prominent
         searchBar.placeholder = " Search..."
         searchBar.sizeToFit()
-        searchBar.isTranslucent = false
+        searchBar.isTranslucent = true
         searchBar.backgroundImage = UIImage()
         searchBar.delegate = self
-        navigationItem.titleView = searchBar
         
         
         view.addSubview(soundIntensityLabel)
@@ -102,12 +109,13 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate {
         view.addSubview(myObjLabel)
         view.addSubview(searchBar)
         view.addSubview(segmentedControlCustom)
+        view.addSubview(tableView)
         
         addConstraints()
         
         //Constraints segmented control
         segmentedControlCustom.translatesAutoresizingMaskIntoConstraints = false
-        segmentedControlCustom.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 15).isActive = true
+        segmentedControlCustom.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: view.frame.height/70).isActive = true
         segmentedControlCustom.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
         segmentedControlCustom.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         
@@ -179,7 +187,28 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate {
         searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12).isActive = true
         searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12).isActive = true
         
+        //constraint tableview
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: view.frame.height/12).isActive = true
+        tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 100
     }
 
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.selectionStyle = .none
+        cell.backgroundColor = .clear
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
 }
 
