@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     let addImageButton = UIButton()
     let photoImage = UIImageView()
     let addPhotoImage = UIImageView()
@@ -115,7 +115,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         horarioCardLabel.layer.masksToBounds = true
         horarioCardLabel.layer.cornerRadius = 10
         horarioCardLabel.textAlignment = .center
-
+        
         view.addSubview(horarioCardLabel)
         
         decibelsLabel.text = "Decibéis"
@@ -152,7 +152,35 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // Funcao ativida pelo botao de imagem
     @objc func escolherImagem() {
-        print("Alo mundo")
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        present(picker, animated: true)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[.editedImage] as? UIImage else { return }
+
+        let imageName = UUID().uuidString
+        let imagePath = getDocumentsDirectory().appendingPathComponent(imageName)
+        	
+
+        if let jpegData = image.jpegData(compressionQuality: 0.8) {
+            try? jpegData.write(to: imagePath)
+        }
+        
+        photoImage.image = UIImage(contentsOfFile: imagePath.path)
+        photoImage.leadingAnchor.constraint(equalTo: addImageButton.leadingAnchor).isActive = true
+        photoImage.trailingAnchor.constraint(equalTo: addImageButton.trailingAnchor).isActive = true
+        photoImage.bottomAnchor.constraint(equalTo: addImageButton.bottomAnchor).isActive = true
+        photoImage.topAnchor.constraint(equalTo: addImageButton.topAnchor).isActive = true
+
+        dismiss(animated: true)
+    }
+
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
     }
     
     @objc func medirDecibel() {
