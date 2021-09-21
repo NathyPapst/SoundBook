@@ -12,6 +12,8 @@ class HomeScreenViewController: UIViewController {
     var buttonEdit: UIBarButtonItem!
     var buttonAdd: UIBarButtonItem!
     var soundIntensityLabel: UILabel = UILabel()
+    var decibelSpace: UIView = UIView()
+    var indicatorLabel: UILabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +29,16 @@ class HomeScreenViewController: UIViewController {
         soundIntensityLabel.textColor = UIColor(named: "textColor")
         soundIntensityLabel.font = .systemFont(ofSize: 28, weight: .semibold)
         
+        decibelSpace.backgroundColor = .systemGray3
+        
+        indicatorLabel.text = "120 dB"
+        indicatorLabel.textColor = UIColor(named: "textColor")
+        indicatorLabel.font = .systemFont(ofSize: (view.frame.height * 0.028), weight: .regular)
+        
         view.addSubview(soundIntensityLabel)
+        view.addSubview(decibelSpace)
+        view.addSubview(indicatorLabel)
+        
         addConstraints()
         
         // Do any additional setup after loading the view.
@@ -49,6 +60,18 @@ class HomeScreenViewController: UIViewController {
         soundIntensityLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 34).isActive = true
         soundIntensityLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -34).isActive = true
         
+        //constraints decibelSpace
+        decibelSpace.translatesAutoresizingMaskIntoConstraints = false
+        decibelSpace.topAnchor.constraint(equalTo: soundIntensityLabel.bottomAnchor, constant: view.frame.height/50).isActive = true
+        decibelSpace.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        decibelSpace.widthAnchor.constraint(equalToConstant: 260).isActive = true
+        decibelSpace.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+
+        //constraints indicatorLabel
+        indicatorLabel.translatesAutoresizingMaskIntoConstraints = false
+        indicatorLabel.leadingAnchor.constraint(equalTo: decibelSpace.trailingAnchor, constant: 10).isActive = true
+        indicatorLabel.topAnchor.constraint(equalTo: soundIntensityLabel.bottomAnchor, constant: view.frame.height/30).isActive = true
+        indicatorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
     }
 
 }
