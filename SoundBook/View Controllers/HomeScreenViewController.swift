@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeScreenViewController: UIViewController {
+class HomeScreenViewController: UIViewController, UISearchBarDelegate {
 
     var buttonEdit: UIBarButtonItem!
     var buttonAdd: UIBarButtonItem!
@@ -17,10 +17,38 @@ class HomeScreenViewController: UIViewController {
     var highLabel: UILabel = UILabel()
     var moderateLabel: UILabel = UILabel()
     var lowLabel: UILabel = UILabel()
+    var myObjLabel: UILabel = UILabel()
+    lazy var searchBar: UISearchBar = UISearchBar()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //cria a segmented
+        let items = ["Todos", "Alto", "Médio", "Baixo"]
+        let segmentedControlCustom = UISegmentedControl(items: items)
+             segmentedControlCustom.selectedSegmentIndex = 0
+        
+        let xPostion:CGFloat = 10
+        let yPostion:CGFloat = 150
+        let elementWidth:CGFloat = 300
+        let elementHeight:CGFloat = 30
+        
+        segmentedControlCustom.frame = CGRect(x: xPostion, y: yPostion, width: elementWidth, height: elementHeight)
+        
+        // Make second segment selected
+        segmentedControlCustom.selectedSegmentIndex = 1
+             
+        //Change text color of UISegmentedControl
+        segmentedControlCustom.tintColor = UIColor.yellow
+             
+        //Change UISegmentedControl background colour
+        segmentedControlCustom.backgroundColor = UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.04)
+             
+        // Add function to handle Value Changed events
+        segmentedControlCustom.addTarget(self, action: #selector(self.segmentedValueChanged(_:)), for: .valueChanged)
+        
+        
+        
         view.backgroundColor = .systemGray6
         navigationController?.navigationBar.tintColor = UIColor(named: "orangeColor")
         buttonEdit = UIBarButtonItem(title: "Editar", style: UIBarButtonItem.Style.plain, target: self, action: #selector(editList))
@@ -52,18 +80,44 @@ class HomeScreenViewController: UIViewController {
         lowLabel.textColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
         lowLabel.font = .systemFont(ofSize: (18), weight: .semibold)
         
+        myObjLabel.text = "Meus Objetos"
+        myObjLabel.textColor = UIColor(named: "textColor")
+        myObjLabel.font = .systemFont(ofSize: 28, weight: .semibold)
+        
+        searchBar.searchBarStyle = UISearchBar.Style.default
+        searchBar.placeholder = " Search..."
+        searchBar.sizeToFit()
+        searchBar.isTranslucent = false
+        searchBar.backgroundImage = UIImage()
+        searchBar.delegate = self
+        navigationItem.titleView = searchBar
+        
+        
         view.addSubview(soundIntensityLabel)
         view.addSubview(decibelSpace)
         view.addSubview(indicatorLabel)
         view.addSubview(highLabel)
         view.addSubview(moderateLabel)
         view.addSubview(lowLabel)
-        
+        view.addSubview(myObjLabel)
+        view.addSubview(searchBar)
+        view.addSubview(segmentedControlCustom)
         
         addConstraints()
         
+        //Constraints segmented control
+        segmentedControlCustom.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControlCustom.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 15).isActive = true
+        segmentedControlCustom.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+        segmentedControlCustom.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        
         // Do any additional setup after loading the view.
     }
+    
+    @objc func segmentedValueChanged(_ sender:UISegmentedControl!)
+        {
+            print("Selected Segment Index is : \(sender.selectedSegmentIndex)")
+        }
 
     @objc func editList(){
         
@@ -71,6 +125,10 @@ class HomeScreenViewController: UIViewController {
     
     @objc func addObject(){
         
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange textSearched: String) {
+
     }
     
     func addConstraints(){
@@ -108,6 +166,19 @@ class HomeScreenViewController: UIViewController {
         highLabel.translatesAutoresizingMaskIntoConstraints = false
         highLabel.topAnchor.constraint(equalTo: decibelSpace.bottomAnchor).isActive = true
         highLabel.centerXAnchor.constraint(equalTo: decibelSpace.centerXAnchor, constant: 80).isActive = true
+        
+        //constraints myObjLabel
+        myObjLabel.translatesAutoresizingMaskIntoConstraints = false
+        myObjLabel.topAnchor.constraint(equalTo: moderateLabel.bottomAnchor, constant: view.frame.height/42).isActive = true
+        myObjLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 34).isActive = true
+        myObjLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -34).isActive = true
+        
+        //constraint searchbar
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.topAnchor.constraint(equalTo: myObjLabel.bottomAnchor, constant: view.frame.height/200).isActive = true
+        searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12).isActive = true
+        searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12).isActive = true
+        
     }
 
 }
