@@ -293,8 +293,6 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         if let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? TextFieldTableViewCell {
             cell.selectionStyle = .none
             cell.backgroundColor = .systemGray6
-            cell.layer.borderWidth = 1
-            cell.layer.borderColor = UIColor.systemGray4.cgColor
             cell.placeHolder = "Ex: Liquidificador"
             cell.dataTextField.delegate = self
             cell.dataTextField.tag = indexPath.row
