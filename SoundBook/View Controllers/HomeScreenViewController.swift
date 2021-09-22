@@ -21,7 +21,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     var searchBar: UISearchBar = UISearchBar()
     let tableView: UITableView = {
         let table = UITableView()
-      table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+      table.register(CellStyle.self, forCellReuseIdentifier: "cell")
       return table
     }()
     
@@ -201,7 +201,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CellStyle else { preconditionFailure() }
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
         return cell
