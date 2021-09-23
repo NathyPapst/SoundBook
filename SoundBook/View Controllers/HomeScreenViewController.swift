@@ -137,12 +137,11 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     func organizeIntense() {
-        print("oi \(intenseViews.count)")
         for i in 0..<intenseViews.count {
             intenseViews[i].translatesAutoresizingMaskIntoConstraints = false
             if i == 0 {
                 intenseViews[i].leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-                intenseViews[i].topAnchor.constraint(equalTo: soundIntensityLabel.bottomAnchor, constant: view.frame.height/30).isActive = true
+                intenseViews[i].topAnchor.constraint(equalTo: soundIntensityLabel.bottomAnchor, constant: view.frame.height/40).isActive = true
                 intenseViews[i].heightAnchor.constraint(equalToConstant: 40).isActive = true
                 intenseViews[i].widthAnchor.constraint(equalToConstant: 18).isActive = true
             } else {
