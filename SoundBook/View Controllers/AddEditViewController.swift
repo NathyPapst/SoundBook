@@ -162,11 +162,11 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.editedImage] as? UIImage else { return }
-
+        
         let imageName = UUID().uuidString
         let imagePath = getDocumentsDirectory().appendingPathComponent(imageName)
-        	
-
+        
+        
         if let jpegData = image.jpegData(compressionQuality: 0.8) {
             try? jpegData.write(to: imagePath)
         }
@@ -176,16 +176,18 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         photoImage.trailingAnchor.constraint(equalTo: addImageButton.trailingAnchor).isActive = true
         photoImage.bottomAnchor.constraint(equalTo: addImageButton.bottomAnchor).isActive = true
         photoImage.topAnchor.constraint(equalTo: addImageButton.topAnchor).isActive = true
-
+        
         dismiss(animated: true)
     }
-
+    
     func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
     }
     
     @objc func medirDecibel() {
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
         print("medindo")
     }
     
