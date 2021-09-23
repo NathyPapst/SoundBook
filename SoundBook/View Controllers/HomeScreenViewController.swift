@@ -25,6 +25,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
       return table
     }()
     
+    var intenseViews: [UIView] = [UIView]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,6 +72,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         soundIntensityLabel.font = .systemFont(ofSize: 28, weight: .semibold)
         
         decibelSpace.backgroundColor = .systemGray3
+        decibelSpace.isHidden = true
+        
         
         indicatorLabel.text = "120 dB"
         indicatorLabel.textColor = UIColor(named: "textColor")
@@ -111,7 +115,17 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         view.addSubview(segmentedControlCustom)
         view.addSubview(tableView)
         
+        for _ in 0...11 {
+            let ret = UIView()
+            ret.backgroundColor = .gray
+            ret.layer.cornerRadius = 10
+            intenseViews.append(ret)
+            view.addSubview(ret)
+        }
+        
+        organizeIntense()
         addConstraints()
+        
         
         //Constraints segmented control
         segmentedControlCustom.translatesAutoresizingMaskIntoConstraints = false
@@ -120,6 +134,32 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         segmentedControlCustom.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         
         // Do any additional setup after loading the view.
+    }
+    
+    func organizeIntense() {
+        print("oi \(intenseViews.count)")
+        for i in 0..<intenseViews.count {
+            intenseViews[i].translatesAutoresizingMaskIntoConstraints = false
+            if i == 0 {
+                intenseViews[i].leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+                intenseViews[i].topAnchor.constraint(equalTo: soundIntensityLabel.bottomAnchor, constant: view.frame.height/30).isActive = true
+                intenseViews[i].heightAnchor.constraint(equalToConstant: 40).isActive = true
+                intenseViews[i].widthAnchor.constraint(equalToConstant: 18).isActive = true
+            } else {
+                if i == 3 || i == 7 || i == 11 {
+                    intenseViews[i].heightAnchor.constraint(equalToConstant: 50).isActive = true
+                    intenseViews[i].widthAnchor.constraint(equalToConstant: 18).isActive = true
+                } else {
+                    intenseViews[i].heightAnchor.constraint(equalToConstant: 40).isActive = true
+                    intenseViews[i].widthAnchor.constraint(equalToConstant: 18).isActive = true
+                }
+                
+                intenseViews[i].bottomAnchor.constraint(equalTo: intenseViews[0].bottomAnchor).isActive = true
+                intenseViews[i].leadingAnchor.constraint(equalTo: intenseViews[i-1].trailingAnchor, constant: 4).isActive = true
+            }
+
+            
+        }
     }
     
     @objc func segmentedValueChanged(_ sender:UISegmentedControl!)
@@ -169,7 +209,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         //constraints lowLabel
         lowLabel.translatesAutoresizingMaskIntoConstraints = false
         lowLabel.topAnchor.constraint(equalTo: decibelSpace.bottomAnchor).isActive = true
-        lowLabel.centerXAnchor.constraint(equalTo: decibelSpace.centerXAnchor, constant: -80).isActive = true
+        lowLabel.centerXAnchor.constraint(equalTo: decibelSpace.centerXAnchor, constant: -95).isActive = true
         
         //constraints moderateLabel
         moderateLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -179,7 +219,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         //constraints highLabel
         highLabel.translatesAutoresizingMaskIntoConstraints = false
         highLabel.topAnchor.constraint(equalTo: decibelSpace.bottomAnchor).isActive = true
-        highLabel.centerXAnchor.constraint(equalTo: decibelSpace.centerXAnchor, constant: 80).isActive = true
+        highLabel.centerXAnchor.constraint(equalTo: decibelSpace.centerXAnchor, constant: 90).isActive = true
         
         //constraints myObjLabel
         myObjLabel.translatesAutoresizingMaskIntoConstraints = false
