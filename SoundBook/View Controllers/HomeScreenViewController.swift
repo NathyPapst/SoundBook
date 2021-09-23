@@ -128,7 +128,13 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         }
 
     @objc func editList(){
-        
+        if (self.tableView.isEditing) {
+                buttonEdit.title = "Editar"
+                self.tableView.setEditing(false, animated: true)
+            } else {
+                buttonEdit.title = "OK"
+                self.tableView.setEditing(true, animated: true)
+            }
     }
     
     @objc func addObject(){
@@ -217,7 +223,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
          let deleteAction = UIContextualAction(style: .normal, title:  "Delete", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
              success(true)
          })
-         deleteAction.backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+        deleteAction.backgroundColor = .red
         
         let editAction = UIContextualAction(style: .normal, title:  "Edit", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
                 success(true)
