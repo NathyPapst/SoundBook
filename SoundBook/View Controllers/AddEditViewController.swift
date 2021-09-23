@@ -82,6 +82,8 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.delegate = self
         tableView.backgroundColor = .clear
         tableView.isScrollEnabled = false
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        view.addGestureRecognizer(tap)
         view.addSubview(tableView)
         
         // configs label intensidade
@@ -299,6 +301,11 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             return cell
         }
         return UITableViewCell()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
     }
     
 }
