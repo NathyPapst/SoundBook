@@ -57,7 +57,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         // Add function to handle Value Changed events
         segmentedControlCustom.addTarget(self, action: #selector(self.segmentedValueChanged(_:)), for: .valueChanged)
         
-        
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        view.addGestureRecognizer(tap)
         
         view.backgroundColor = .systemGray6
         navigationController?.navigationBar.tintColor = UIColor(named: "orangeColor")
@@ -85,7 +86,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         
         moderateLabel.text = "Médio"
-        moderateLabel.textColor = UIColor(red: 244.0/255.0, green: 210.0/255.0, blue: 80.0/255.0, alpha: 1.0)
+        moderateLabel.textColor = UIColor(named: "moderateColor")
         moderateLabel.font = .systemFont(ofSize: (18), weight: .semibold)
         
         lowLabel.text = "Baixo"
@@ -184,6 +185,10 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
 
     }
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.endEditing(true)
+    }
+    
     func addConstraints(){
         
         //constraints do sound intensity
@@ -271,5 +276,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
        
          return UISwipeActionsConfiguration(actions: [deleteAction, editAction])
      }
+    
+    
 }
 
