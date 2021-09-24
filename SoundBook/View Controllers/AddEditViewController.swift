@@ -38,7 +38,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
         
-        navigationController?.navigationBar.isTranslucent = false
+        //navigationController?.navigationBar.isTranslucent = false
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: nil)
         navigationItem.leftBarButtonItem?.tintColor = .red
         
@@ -194,10 +194,10 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     // Funcao para adicionar constraint de TODOS os elementos
     func addConstraints() {
         addImageButton.translatesAutoresizingMaskIntoConstraints = false
-        addImageButton.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        addImageButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         addImageButton.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         addImageButton.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        addImageButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3).isActive = true
+        addImageButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.25).isActive = true
         
         
         photoImage.translatesAutoresizingMaskIntoConstraints = false
