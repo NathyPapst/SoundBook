@@ -8,7 +8,7 @@
 import UIKit
 
 class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate {
-
+    
     var buttonEdit: UIBarButtonItem!
     var buttonAdd: UIBarButtonItem!
     var soundIntensityLabel: UILabel = UILabel()
@@ -21,8 +21,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     var searchBar: UISearchBar = UISearchBar()
     let tableView: UITableView = {
         let table = UITableView()
-      table.register(CellStyle.self, forCellReuseIdentifier: "cell")
-      return table
+        table.register(CellStyle.self, forCellReuseIdentifier: "cell")
+        return table
     }()
     
     var intenseViews: [UIView] = [UIView]()
@@ -36,7 +36,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         //cria a segmented
         let items = ["Todos", "Alto", "Médio", "Baixo"]
         let segmentedControlCustom = UISegmentedControl(items: items)
-             segmentedControlCustom.selectedSegmentIndex = 0
+        segmentedControlCustom.selectedSegmentIndex = 0
         
         let xPostion:CGFloat = 10
         let yPostion:CGFloat = 150
@@ -47,13 +47,13 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         // Make second segment selected
         segmentedControlCustom.selectedSegmentIndex = 1
-             
+        
         //Change text color of UISegmentedControl
         segmentedControlCustom.tintColor = UIColor.yellow
-             
+        
         //Change UISegmentedControl background colour
         segmentedControlCustom.backgroundColor = UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.04)
-             
+        
         // Add function to handle Value Changed events
         segmentedControlCustom.addTarget(self, action: #selector(self.segmentedValueChanged(_:)), for: .valueChanged)
         
@@ -157,24 +157,24 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
                 intenseViews[i].bottomAnchor.constraint(equalTo: intenseViews[0].bottomAnchor).isActive = true
                 intenseViews[i].leadingAnchor.constraint(equalTo: intenseViews[i-1].trailingAnchor, constant: 4).isActive = true
             }
-
+            
             
         }
     }
     
     @objc func segmentedValueChanged(_ sender:UISegmentedControl!)
-        {
-            print("Selected Segment Index is : \(sender.selectedSegmentIndex)")
-        }
-
+    {
+        print("Selected Segment Index is : \(sender.selectedSegmentIndex)")
+    }
+    
     @objc func editList(){
         if (self.tableView.isEditing) {
-                buttonEdit.title = "Editar"
-                self.tableView.setEditing(false, animated: true)
-            } else {
-                buttonEdit.title = "OK"
-                self.tableView.setEditing(true, animated: true)
-            }
+            buttonEdit.title = "Editar"
+            self.tableView.setEditing(false, animated: true)
+        } else {
+            buttonEdit.title = "OK"
+            self.tableView.setEditing(true, animated: true)
+        }
     }
     
     @objc func addObject(){
@@ -184,8 +184,9 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         present(vc, animated: true)
     }
     
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange textSearched: String) {
-
+        
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -206,7 +207,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         decibelSpace.heightAnchor.constraint(equalToConstant: 50).isActive = true
         decibelSpace.widthAnchor.constraint(equalToConstant: 260).isActive = true
         decibelSpace.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-
+        
         //constraints indicatorLabel
         indicatorLabel.translatesAutoresizingMaskIntoConstraints = false
         indicatorLabel.leadingAnchor.constraint(equalTo: decibelSpace.trailingAnchor, constant: 10).isActive = true
@@ -252,33 +253,33 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 100
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CellStyle else { preconditionFailure() }
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
         return cell
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
     
-     func tableView(_ tableView: UITableView,
-                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
-     {
-         let deleteAction = UIContextualAction(style: .normal, title:  "Delete", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-             success(true)
-         })
+    func tableView(_ tableView: UITableView,
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+    {
+        let deleteAction = UIContextualAction(style: .normal, title:  "Delete", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            success(true)
+        })
         deleteAction.backgroundColor = .red
         
         let editAction = UIContextualAction(style: .normal, title:  "Edit", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-                success(true)
-            })
-   editAction.backgroundColor = UIColor(red: 254.0/255.0, green: 150.0/255.0, blue: 0.0/255.0, alpha: 1.0)
-       
-         return UISwipeActionsConfiguration(actions: [deleteAction, editAction])
-     }
+            success(true)
+        })
+        editAction.backgroundColor = UIColor(red: 254.0/255.0, green: 150.0/255.0, blue: 0.0/255.0, alpha: 1.0)
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction, editAction])
+    }
     
     
 }
