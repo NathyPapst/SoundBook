@@ -160,6 +160,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     @objc func escolherImagem() {
         let picker = UIImagePickerController()
         picker.allowsEditing = true
+        UINavigationBar.appearance().tintColor = .red
         picker.delegate = self
         present(picker, animated: true)
     }
