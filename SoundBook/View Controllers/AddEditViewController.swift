@@ -34,6 +34,12 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     let microfoneButton = UIButton()
     let microfone = UIImageView()
     
+    var nomeObjeto: String?
+    var imageNameObjeto: String?
+    var classificacaoObjeto: String?
+    var horarioObjeto: String?
+    var intensidadeObjeto: Float?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
@@ -44,7 +50,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         title = "Adicionar"
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: nil)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveObject))
         navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "orangeColor")
         
         
@@ -156,6 +162,14 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.dismiss(animated: true)
     }
     
+    @objc func saveObject() {
+        if let imageNameObjeto = imageNameObjeto {
+            _ = SoundRepository.shared.createObject(nome: "Legal", intensidade: 0, imageName: imageNameObjeto, horarioUso: "20h - 7h", classificacao: "Alto")
+            dismiss(animated: true)
+        }
+        
+    }
+    
     // Funcao ativida pelo botao de imagem
     @objc func escolherImagem() {
         let picker = UIImagePickerController()
@@ -170,6 +184,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         let imageName = UUID().uuidString
         let imagePath = getDocumentsDirectory().appendingPathComponent(imageName)
+        imageNameObjeto = imageName
         
         
         if let jpegData = image.jpegData(compressionQuality: 0.8) {
@@ -314,5 +329,6 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.view.endEditing(true)
         return false
     }
+    
     
 }
