@@ -46,6 +46,7 @@
 		17075CA726FA77FE00859380 /* Cell Style  */ = {
 			isa = PBXGroup;
 			children = (
+				DF858B1326FA44D30082FA44 /* TextFieldTableViewCell.swift */,
 				17075CA826FA782000859380 /* CellStyle.swift */,
 			);
 			path = "Cell Style ";
@@ -77,7 +78,6 @@
 				E93E8D0C26F3D16800D60D88 /* Assets.xcassets */,
 				E93E8D0E26F3D16800D60D88 /* LaunchScreen.storyboard */,
 				E93E8D1126F3D16800D60D88 /* Info.plist */,
-				DF858B1326FA44D30082FA44 /* TextFieldTableViewCell.swift */,
 			);
 			path = SoundBook;
 			sourceTree = "<group>";
