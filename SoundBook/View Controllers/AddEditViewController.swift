@@ -38,7 +38,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
         
-        navigationController?.navigationBar.isTranslucent = false
+        //navigationController?.navigationBar.isTranslucent = false
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: nil)
         navigationItem.leftBarButtonItem?.tintColor = .red
         
@@ -82,6 +82,8 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.delegate = self
         tableView.backgroundColor = .clear
         tableView.isScrollEnabled = false
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        view.addGestureRecognizer(tap)
         view.addSubview(tableView)
         
         // configs label intensidade
@@ -160,11 +162,11 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.editedImage] as? UIImage else { return }
-
+        
         let imageName = UUID().uuidString
         let imagePath = getDocumentsDirectory().appendingPathComponent(imageName)
-        	
-
+        
+        
         if let jpegData = image.jpegData(compressionQuality: 0.8) {
             try? jpegData.write(to: imagePath)
         }
@@ -174,26 +176,28 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         photoImage.trailingAnchor.constraint(equalTo: addImageButton.trailingAnchor).isActive = true
         photoImage.bottomAnchor.constraint(equalTo: addImageButton.bottomAnchor).isActive = true
         photoImage.topAnchor.constraint(equalTo: addImageButton.topAnchor).isActive = true
-
+        
         dismiss(animated: true)
     }
-
+    
     func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
     }
     
     @objc func medirDecibel() {
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
         print("medindo")
     }
     
     // Funcao para adicionar constraint de TODOS os elementos
     func addConstraints() {
         addImageButton.translatesAutoresizingMaskIntoConstraints = false
-        addImageButton.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        addImageButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         addImageButton.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         addImageButton.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        addImageButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3).isActive = true
+        addImageButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.25).isActive = true
         
         
         photoImage.translatesAutoresizingMaskIntoConstraints = false
@@ -299,6 +303,11 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             return cell
         }
         return UITableViewCell()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
     }
     
 }
