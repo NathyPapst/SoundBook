@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19206" systemVersion="20G165" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Objeto" representedClassName="Objeto" syncable="YES" codeGenerationType="class">
+        <attribute name="classificacao" optional="YES" attributeType="String"/>
+        <attribute name="horarioUso" optional="YES" attributeType="String"/>
+        <attribute name="imageName" optional="YES" attributeType="String"/>
+        <attribute name="intensidade" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="nome" optional="YES" attributeType="String"/>
+    </entity>
+    <elements>
+        <element name="Objeto" positionX="-63" positionY="-18" width="128" height="104"/>
+    </elements>
 </model>
