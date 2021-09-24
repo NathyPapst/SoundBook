@@ -39,7 +39,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         view.backgroundColor = .systemGray6
         
         //navigationController?.navigationBar.isTranslucent = false
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: nil)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(popView))
         navigationItem.leftBarButtonItem?.tintColor = .red
         
         title = "Adicionar"
@@ -150,6 +150,10 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         view.addSubview(microfone)
         
         addConstraints()
+    }
+    
+    @objc func popView() {
+        self.dismiss(animated: true)
     }
     
     // Funcao ativida pelo botao de imagem

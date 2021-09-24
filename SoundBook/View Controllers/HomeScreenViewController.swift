@@ -178,7 +178,10 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     @objc func addObject(){
-        
+        let root = AddEditViewController()
+        let vc = UINavigationController(rootViewController: root)
+        vc.modalPresentationStyle = .automatic
+        present(vc, animated: true)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange textSearched: String) {
