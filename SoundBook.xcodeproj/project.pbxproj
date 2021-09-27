@@ -17,6 +17,7 @@
 		E93E8D0D26F3D16800D60D88 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E93E8D0C26F3D16800D60D88 /* Assets.xcassets */; };
 		E93E8D1026F3D16800D60D88 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E93E8D0E26F3D16800D60D88 /* LaunchScreen.storyboard */; };
 		E93E8D1B26F3DB8200D60D88 /* AddEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93E8D1A26F3DB8200D60D88 /* AddEditViewController.swift */; };
+		E9FE8B5527023CE700227FFD /* CellStyleEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FE8B5427023CE700227FFD /* CellStyleEdit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		E93E8D0F26F3D16800D60D88 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E93E8D1126F3D16800D60D88 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E93E8D1A26F3DB8200D60D88 /* AddEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditViewController.swift; sourceTree = "<group>"; };
+		E9FE8B5427023CE700227FFD /* CellStyleEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellStyleEdit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +52,7 @@
 			children = (
 				DF858B1326FA44D30082FA44 /* TextFieldTableViewCell.swift */,
 				17075CA826FA782000859380 /* CellStyle.swift */,
+				E9FE8B5427023CE700227FFD /* CellStyleEdit.swift */,
 			);
 			path = "Cell Style ";
 			sourceTree = "<group>";
@@ -183,6 +186,7 @@
 				E93E8D0526F3D16500D60D88 /* HomeScreenViewController.swift in Sources */,
 				DF41252C26FE679E002587DF /* SoundRepository.swift in Sources */,
 				E93E8D1B26F3DB8200D60D88 /* AddEditViewController.swift in Sources */,
+				E9FE8B5527023CE700227FFD /* CellStyleEdit.swift in Sources */,
 				E93E8D0126F3D16500D60D88 /* AppDelegate.swift in Sources */,
 				DF858B1426FA44D30082FA44 /* TextFieldTableViewCell.swift in Sources */,
 				E93E8D0B26F3D16500D60D88 /* SoundBook.xcdatamodeld in Sources */,
