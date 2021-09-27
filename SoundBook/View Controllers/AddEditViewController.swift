@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import AVFoundation
 
-class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate, AVAudioRecorderDelegate {
     
     // interface
     let addImageButton = UIButton()
@@ -40,6 +41,13 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var objeto: Objeto?
     
+    // variaveis para gravar som
+    var recordingSession: AVAudioSession!
+    var audioRecorder: AVAudioRecorder!
+    var time = Timer()
+    var valores = [Float]()
+    
+    // var para dar reload na tableView anterior
     var isDismissed: (() -> Void)?
     
     override func viewDidLoad() {
@@ -153,16 +161,34 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         view.addSubview(circle)
         
         
-        microfone.image = UIImage(systemName: "mic")
+        microfone.image = UIImage(systemName: "mic.slash")
         microfone.tintColor = .systemGray6
         view.addSubview(microfone)
         
-        if objeto != nil {
-            let imagePath = getDocumentsDirectory().appendingPathComponent(objeto?.imageName ?? "")
+        if let objeto = objeto {
+            let imagePath = getDocumentsDirectory().appendingPathComponent(objeto.imageName ?? "")
             photoImage.image = UIImage(contentsOfFile: imagePath.path)
+            decibelsCardLabel.text = "\(String(format: "%.2f", objeto.intensidade))"
         }
         
         addConstraints()
+        
+        recordingSession = AVAudioSession.sharedInstance()
+        do {
+            try recordingSession.setCategory(.playAndRecord, mode: .default)
+            try recordingSession.setActive(true)
+            recordingSession.requestRecordPermission() { allowed in
+                DispatchQueue.main.async {
+                    if allowed {
+                        print("allowed")
+                    } else {
+                        print("Erro ao tentar gravar")
+                    }
+                }
+            }
+        } catch {
+            print("Erro ao tentar gravar")
+        }
     }
     
     @objc func popView() {
@@ -170,14 +196,26 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func saveObject() {
-        if let imageNameObjeto = imageNameObjeto {
-            _ = SoundRepository.shared.createObject(nome: "Legal", intensidade: 0, imageName: imageNameObjeto, horarioUso: "20h - 7h", classificacao: "Alto")
-            self.isDismissed?()
-            dismiss(animated: true)
+        if let objeto = objeto, let intensidadeObjeto = intensidadeObjeto {
+            objeto.imageName = imageNameObjeto
+            objeto.intensidade = intensidadeObjeto
+            objeto.nome = nomeObjeto
+            objeto.classificacao = classificacaoObjeto
+            objeto.horarioUso = horarioObjeto
+            SoundRepository.shared.saveContext()
+        } else {
+            if let imageNameObjeto = imageNameObjeto, let intensidadeObjeto = intensidadeObjeto {
+                _ = SoundRepository.shared.createObject(nome: "Legal", intensidade: intensidadeObjeto, imageName: imageNameObjeto, horarioUso: "20h - 7h", classificacao: "Alto")
+            }
         }
+        
+        self.isDismissed?()
+        dismiss(animated: true)
+        
         
     }
     
+    // MARK: - Funçoes UIImagePicker
     // Funcao ativida pelo botao de imagem
     @objc func escolherImagem() {
         let picker = UIImagePickerController()
@@ -213,12 +251,25 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         return paths[0]
     }
     
+    // MARK: - Funcao botao de microfone
     @objc func medirDecibel() {
         let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
-        print("medindo")
+        
+        if audioRecorder == nil {
+            startRecording()
+            microfone.image = UIImage(systemName: "mic")
+            generator.impactOccurred()
+        } else {
+            finishRecording(success: true)
+            microfone.image = UIImage(systemName: "mic.slash")
+            generator.impactOccurred()
+            
+        }
+        
+        
     }
     
+    // MARK: - Constraints da interface
     // Funcao para adicionar constraint de TODOS os elementos
     func addConstraints() {
         addImageButton.translatesAutoresizingMaskIntoConstraints = false
@@ -314,6 +365,69 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         microfone.widthAnchor.constraint(equalTo: circle.widthAnchor, multiplier: 0.4).isActive = true
         
     }
+    
+    // MARK: - Audio recorder
+    
+    func startRecording() {
+        let audioFilename = getDocumentsDirectory().appendingPathComponent("recording.m4a")
+        valores.removeAll()
+        
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+        
+        do {
+            audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
+            audioRecorder.isMeteringEnabled = true
+            audioRecorder.delegate = self
+            audioRecorder.record()
+            time = Timer.scheduledTimer(timeInterval: 1/5, target: self, selector: #selector(measureIntensity), userInfo: nil, repeats: true)
+            
+            
+        } catch {
+            finishRecording(success: false)
+        }
+    }
+    
+    func finishRecording(success: Bool) {
+        var soma: Float = 0
+        for i in valores {
+            soma += i
+        }
+        
+        intensidadeObjeto = soma/Float(valores.count)
+        decibelsCardLabel.text = "\(String(format: "%.2f", soma/Float(valores.count)))"
+        time.invalidate()
+        
+        audioRecorder.stop()
+        audioRecorder = nil
+    }
+    
+    @objc func measureIntensity() {
+        audioRecorder.updateMeters()
+        var decibel = audioRecorder.averagePower(forChannel: 0)
+        
+        let minDb: Float = -85
+        
+        // 2
+        if decibel < minDb {
+            decibel = 0.0
+        } else if decibel >= 1.0 {
+            decibel = 85
+        } else {
+          // 3
+            decibel += 85
+        }
+        
+        print(decibel)
+        valores.append(decibel)
+    }
+    
+    
+    // MARK: - Table View functions
     
     // Funcao que escolhe quantidade de celulas
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
