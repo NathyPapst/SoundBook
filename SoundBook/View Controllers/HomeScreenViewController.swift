@@ -188,6 +188,9 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         let root = AddEditViewController()
         let vc = UINavigationController(rootViewController: root)
         vc.modalPresentationStyle = .automatic
+        root.isDismissed = { [weak self] in
+            self?.tableView.reloadData()
+        }
         present(vc, animated: true)
     }
     
@@ -286,11 +289,32 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     {
         let deleteAction = UIContextualAction(style: .normal, title:  "Delete", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             success(true)
+            let ac = UIAlertController(title: "Tem certeza?", message: "Após deletar não será possível desfazer a alteração.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
+            ac.addAction(UIAlertAction(title: "Deletar", style: .destructive, handler: {
+                action in
+                
+                SoundRepository.shared.deleteObject(object: SoundRepository.shared.getAllObjects()[indexPath.row])
+                tableView.reloadData()
+            }))
+            
+            self.present(ac, animated: true)
+            
         })
         deleteAction.backgroundColor = .red
         
         let editAction = UIContextualAction(style: .normal, title:  "Edit", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             success(true)
+            let root = AddEditViewController()
+            let vc = UINavigationController(rootViewController: root)
+            vc.modalPresentationStyle = .automatic
+            
+            let objeto = SoundRepository.shared.getAllObjects()[indexPath.row]
+            root.objeto = objeto
+            root.isDismissed = { [weak self] in
+                self?.tableView.reloadData()
+            }
+            self.present(vc, animated: true)
         })
         editAction.backgroundColor = UIColor(red: 254.0/255.0, green: 150.0/255.0, blue: 0.0/255.0, alpha: 1.0)
         
