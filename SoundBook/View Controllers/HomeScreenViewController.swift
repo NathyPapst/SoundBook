@@ -279,43 +279,33 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        if type == (.home) {
-//
-//        }
-//        else {
-//            tableView.register(CellStyleEdit.self, forCellReuseIdentifier: "cell2")
-//        }
+        let objetos = SoundRepository.shared.getAllObjects()
+        let imagePath = getDocumentsDirectory().appendingPathComponent(objetos[indexPath.row].imageName ?? "")
         
         if self.type == .home {
             tableView.register(CellStyle.self, forCellReuseIdentifier: "cell")
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CellStyle else { preconditionFailure() }
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
+            cell.titleLabel.text = objetos[indexPath.row].nome
+            cell.imageCell.image = UIImage(contentsOfFile: imagePath.path)
+            cell.timeLabel.text = objetos[indexPath.row].horarioUso
+            cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao!)"
             return cell
         }
         
         else if self.type == .edit {
-            tableView.register(CellStyleEdit.self, forCellReuseIdentifier: "cell2")
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell2", for: indexPath) as? CellStyleEdit else { preconditionFailure() }
+            tableView.register(CellStyleEdit.self, forCellReuseIdentifier: "cellEdit")
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "cellEdit", for: indexPath) as? CellStyleEdit else { preconditionFailure() }
             cell.selectionStyle = .none
             cell.backgroundColor = .clear
+            cell.titleLabel.text = objetos[indexPath.row].nome
+            cell.imageCell.image = UIImage(contentsOfFile: imagePath.path)
+            cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao!)"
             return cell
         }
         
         return UITableViewCell()
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CellStyle else { preconditionFailure() }
-        cell.selectionStyle = .none
-        cell.backgroundColor = .clear
-        
-        let objetos = SoundRepository.shared.getAllObjects()
-        let imagePath = getDocumentsDirectory().appendingPathComponent(objetos[indexPath.row].imageName ?? "")
-        cell.titleLabel.text = objetos[indexPath.row].nome
-        cell.imageCell.image = UIImage(contentsOfFile: imagePath.path)
-        cell.timeLabel.text = objetos[indexPath.row].horarioUso
-        cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao!)"
-        
-        
-        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
