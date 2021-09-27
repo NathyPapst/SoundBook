@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		17075CA926FA782000859380 /* CellStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17075CA826FA782000859380 /* CellStyle.swift */; };
+		DF41252C26FE679E002587DF /* SoundRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41252B26FE679E002587DF /* SoundRepository.swift */; };
 		DF858B1426FA44D30082FA44 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF858B1326FA44D30082FA44 /* TextFieldTableViewCell.swift */; };
 		E93E8D0126F3D16500D60D88 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93E8D0026F3D16500D60D88 /* AppDelegate.swift */; };
 		E93E8D0326F3D16500D60D88 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93E8D0226F3D16500D60D88 /* SceneDelegate.swift */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		17075CA826FA782000859380 /* CellStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellStyle.swift; sourceTree = "<group>"; };
+		DF41252B26FE679E002587DF /* SoundRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundRepository.swift; sourceTree = "<group>"; };
 		DF858B1326FA44D30082FA44 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		E93E8CFD26F3D16500D60D88 /* SoundBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoundBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93E8D0026F3D16500D60D88 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				E93E8D0926F3D16500D60D88 /* SoundBook.xcdatamodeld */,
+				DF41252B26FE679E002587DF /* SoundRepository.swift */,
 			);
 			path = "Core Data";
 			sourceTree = "<group>";
@@ -181,6 +184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E93E8D0526F3D16500D60D88 /* HomeScreenViewController.swift in Sources */,
+				DF41252C26FE679E002587DF /* SoundRepository.swift in Sources */,
 				E93E8D1B26F3DB8200D60D88 /* AddEditViewController.swift in Sources */,
 				E9FE8B5527023CE700227FFD /* CellStyleEdit.swift in Sources */,
 				E93E8D0126F3D16500D60D88 /* AppDelegate.swift in Sources */,
