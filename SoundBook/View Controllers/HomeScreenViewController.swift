@@ -30,6 +30,9 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        _ = SoundRepository.shared.createObject(nome: "Luca", intensidade: 50, imageName: "", horarioUso: "20h - 7h", classificacao: "Alto")
+        
         tableView.dataSource = self
         tableView.delegate = self
         tableView.backgroundColor = .clear
@@ -137,6 +140,10 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         // Do any additional setup after loading the view.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
+    }
+    
     func organizeIntense() {
         for i in 0..<intenseViews.count {
             intenseViews[i].translatesAutoresizingMaskIntoConstraints = false
@@ -181,6 +188,9 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         let root = AddEditViewController()
         let vc = UINavigationController(rootViewController: root)
         vc.modalPresentationStyle = .automatic
+        root.isDismissed = { [weak self] in
+            self?.tableView.reloadData()
+        }
         present(vc, animated: true)
     }
     
@@ -251,13 +261,22 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 100
+        return SoundRepository.shared.getAllObjects().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CellStyle else { preconditionFailure() }
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
+        
+        let objetos = SoundRepository.shared.getAllObjects()
+        let imagePath = getDocumentsDirectory().appendingPathComponent(objetos[indexPath.row].imageName ?? "")
+        cell.titleLabel.text = objetos[indexPath.row].nome
+        cell.imageCell.image = UIImage(contentsOfFile: imagePath.path)
+        cell.timeLabel.text = objetos[indexPath.row].horarioUso
+        cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao!)"
+        
+        
         return cell
     }
     
@@ -270,15 +289,41 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     {
         let deleteAction = UIContextualAction(style: .normal, title:  "Delete", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             success(true)
+            let ac = UIAlertController(title: "Tem certeza?", message: "Após deletar não será possível desfazer a alteração.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
+            ac.addAction(UIAlertAction(title: "Deletar", style: .destructive, handler: {
+                action in
+                
+                SoundRepository.shared.deleteObject(object: SoundRepository.shared.getAllObjects()[indexPath.row])
+                tableView.reloadData()
+            }))
+            
+            self.present(ac, animated: true)
+            
         })
         deleteAction.backgroundColor = .red
         
         let editAction = UIContextualAction(style: .normal, title:  "Edit", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             success(true)
+            let root = AddEditViewController()
+            let vc = UINavigationController(rootViewController: root)
+            vc.modalPresentationStyle = .automatic
+            
+            let objeto = SoundRepository.shared.getAllObjects()[indexPath.row]
+            root.objeto = objeto
+            root.isDismissed = { [weak self] in
+                self?.tableView.reloadData()
+            }
+            self.present(vc, animated: true)
         })
         editAction.backgroundColor = UIColor(red: 254.0/255.0, green: 150.0/255.0, blue: 0.0/255.0, alpha: 1.0)
         
         return UISwipeActionsConfiguration(actions: [deleteAction, editAction])
+    }
+    
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
     }
     
     

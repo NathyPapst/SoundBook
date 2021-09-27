@@ -8,31 +8,39 @@
 import UIKit
 
 class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    
+    // interface
     let addImageButton = UIButton()
     let photoImage = UIImageView()
     let addPhotoImage = UIImageView()
     let nomeLabel = UILabel()
     let intensidadeLabel = UILabel()
-    
     let decibelsLabel = UILabel()
     let classificacaoLabel = UILabel()
     let horarioLabel = UILabel()
-    
     let decibelsCardLabel = UILabel()
     let classificacaoCardLabel = UILabel()
     let horarioCardLabel = UILabel()
-    
     let instrucaoLabel = UILabel()
-    
     let tableView: UITableView = {
         let table = UITableView()
         table.register(TextFieldTableViewCell.self, forCellReuseIdentifier: "cell")
         return table
     }()
-    
     let circle = UIImageView()
     let microfoneButton = UIButton()
     let microfone = UIImageView()
+    
+    // variaveis de coleta
+    var nomeObjeto: String?
+    var imageNameObjeto: String?
+    var classificacaoObjeto: String?
+    var horarioObjeto: String?
+    var intensidadeObjeto: Float?
+    
+    var objeto: Objeto?
+    
+    var isDismissed: (() -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +52,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         title = "Adicionar"
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: nil)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveObject))
         navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "orangeColor")
         
         
@@ -149,11 +157,25 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         microfone.tintColor = .systemGray6
         view.addSubview(microfone)
         
+        if objeto != nil {
+            let imagePath = getDocumentsDirectory().appendingPathComponent(objeto?.imageName ?? "")
+            photoImage.image = UIImage(contentsOfFile: imagePath.path)
+        }
+        
         addConstraints()
     }
     
     @objc func popView() {
         self.dismiss(animated: true)
+    }
+    
+    @objc func saveObject() {
+        if let imageNameObjeto = imageNameObjeto {
+            _ = SoundRepository.shared.createObject(nome: "Legal", intensidade: 0, imageName: imageNameObjeto, horarioUso: "20h - 7h", classificacao: "Alto")
+            self.isDismissed?()
+            dismiss(animated: true)
+        }
+        
     }
     
     // Funcao ativida pelo botao de imagem
@@ -170,6 +192,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         let imageName = UUID().uuidString
         let imagePath = getDocumentsDirectory().appendingPathComponent(imageName)
+        imageNameObjeto = imageName
         
         
         if let jpegData = image.jpegData(compressionQuality: 0.8) {
@@ -314,5 +337,6 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.view.endEditing(true)
         return false
     }
+    
     
 }
