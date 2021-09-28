@@ -6,13 +6,14 @@
 //
 
 import UIKit
+import AVFoundation
 
 enum ViewControllerType{
     case home
     case edit
 }
 
-class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate {
+class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate, AVAudioRecorderDelegate {
     
     var buttonEditOK: UIBarButtonItem!
     var buttonAdd: UIBarButtonItem!
@@ -32,6 +33,10 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }()
     
     var intenseViews: [UIView] = [UIView]()
+    var recordingSession: AVAudioSession!
+    var audioRecorder: AVAudioRecorder!
+    var time = Timer()
+    var valores = [Float]()
     
     
     override func viewDidLoad() {
@@ -144,6 +149,25 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         segmentedControlCustom.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         
         // Do any additional setup after loading the view.
+        
+        recordingSession = AVAudioSession.sharedInstance()
+        do {
+            try recordingSession.setCategory(.playAndRecord, mode: .default)
+            try recordingSession.setActive(true)
+            recordingSession.requestRecordPermission() { allowed in
+                DispatchQueue.main.async {
+                    if allowed {
+                        print("allowed")
+                    } else {
+                        print("Erro ao tentar gravar")
+                    }
+                }
+            }
+        } catch {
+            print("Erro ao tentar gravar")
+        }
+        
+        medirDecibel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -382,6 +406,60 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
+    }
+    
+    func medirDecibel() {
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
+        
+        if audioRecorder == nil {
+            startRecording()
+        }
+    }
+    
+    func startRecording() {
+        let audioFilename = getDocumentsDirectory().appendingPathComponent("recording.m4a")
+        valores.removeAll()
+        
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+        
+        do {
+            audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
+            audioRecorder.isMeteringEnabled = true
+            audioRecorder.delegate = self
+            audioRecorder.record()
+            time = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(measureIntensity), userInfo: nil, repeats: true)
+            
+            
+        } catch {
+            
+        }
+    }
+    
+    @objc func measureIntensity() {
+        var decibel = audioRecorder.peakPower(forChannel: 0)
+        audioRecorder.updateMeters()
+        
+        let minDb: Float = -80
+        
+        // 2
+        if decibel < minDb {
+            decibel = 0.0
+        } else if decibel >= 1.0 {
+            decibel -= minDb
+        } else {
+          // 3
+            decibel -= minDb
+        }
+        
+        print(decibel)
+        valores.append(decibel)
+        indicatorLabel.text = "\(Int(decibel))"
     }
     
     
