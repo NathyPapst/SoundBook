@@ -7,9 +7,14 @@
 
 import UIKit
 
+enum ViewControllerType{
+    case home
+    case edit
+}
+
 class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate {
     
-    var buttonEdit: UIBarButtonItem!
+    var buttonEditOK: UIBarButtonItem!
     var buttonAdd: UIBarButtonItem!
     var soundIntensityLabel: UILabel = UILabel()
     var decibelSpace: UIView = UIView()
@@ -19,9 +24,10 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     var lowLabel: UILabel = UILabel()
     var myObjLabel: UILabel = UILabel()
     var searchBar: UISearchBar = UISearchBar()
+    var type: ViewControllerType = .home
     let tableView: UITableView = {
         let table = UITableView()
-        table.register(CellStyle.self, forCellReuseIdentifier: "cell")
+        table.backgroundColor = .clear
         return table
     }()
     
@@ -35,7 +41,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .clear
+        
         //cria a segmented
         let items = ["Todos", "Alto", "Médio", "Baixo"]
         let segmentedControlCustom = UISegmentedControl(items: items)
@@ -65,8 +71,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         view.backgroundColor = .systemGray6
         navigationController?.navigationBar.tintColor = UIColor(named: "orangeColor")
-        buttonEdit = UIBarButtonItem(title: "Editar", style: UIBarButtonItem.Style.plain, target: self, action: #selector(editList))
-        navigationItem.leftBarButtonItem = buttonEdit!
+        buttonEditOK = UIBarButtonItem(title: "Editar", style: UIBarButtonItem.Style.plain, target: self, action: #selector(editList))
+        navigationItem.leftBarButtonItem = buttonEditOK!
         
         buttonAdd = UIBarButtonItem(image: UIImage(systemName: "plus"), style: UIBarButtonItem.Style.plain, target: self, action: #selector(addObject))
         navigationItem.rightBarButtonItem = buttonAdd!
@@ -175,13 +181,21 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     @objc func editList(){
-        if (self.tableView.isEditing) {
-            buttonEdit.title = "Editar"
-            self.tableView.setEditing(false, animated: true)
-        } else {
-            buttonEdit.title = "OK"
-            self.tableView.setEditing(true, animated: true)
-        }
+        self.type = .edit
+        
+        buttonEditOK = UIBarButtonItem(title: "OK", style: UIBarButtonItem.Style.plain, target: self, action: #selector(okList))
+        navigationItem.leftBarButtonItem = buttonEditOK!
+    
+        tableView.reloadData()
+    }
+    
+    @objc func okList() {
+        self.type = .home
+        
+        buttonEditOK = UIBarButtonItem(title: "Editar", style: UIBarButtonItem.Style.plain, target: self, action: #selector(editList))
+        navigationItem.leftBarButtonItem = buttonEditOK!
+        
+        tableView.reloadData()
     }
     
     @objc func addObject(){
@@ -265,19 +279,33 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CellStyle else { preconditionFailure() }
-        cell.selectionStyle = .none
-        cell.backgroundColor = .clear
-        
         let objetos = SoundRepository.shared.getAllObjects()
         let imagePath = getDocumentsDirectory().appendingPathComponent(objetos[indexPath.row].imageName ?? "")
-        cell.titleLabel.text = objetos[indexPath.row].nome
-        cell.imageCell.image = UIImage(contentsOfFile: imagePath.path)
-        cell.timeLabel.text = objetos[indexPath.row].horarioUso
-        cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao!)"
         
+        if self.type == .home {
+            tableView.register(CellStyle.self, forCellReuseIdentifier: "cell")
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CellStyle else { preconditionFailure() }
+            cell.selectionStyle = .none
+            cell.backgroundColor = .clear
+            cell.titleLabel.text = objetos[indexPath.row].nome
+            cell.imageCell.image = UIImage(contentsOfFile: imagePath.path)
+            cell.timeLabel.text = objetos[indexPath.row].horarioUso
+            cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao!)"
+            return cell
+        }
         
-        return cell
+        else if self.type == .edit {
+            tableView.register(CellStyleEdit.self, forCellReuseIdentifier: "cellEdit")
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "cellEdit", for: indexPath) as? CellStyleEdit else { preconditionFailure() }
+            cell.selectionStyle = .none
+            cell.backgroundColor = .clear
+            cell.titleLabel.text = objetos[indexPath.row].nome
+            cell.imageCell.image = UIImage(contentsOfFile: imagePath.path)
+            cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao!)"
+            return cell
+        }
+        
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
