@@ -207,7 +207,16 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func popView() {
-        self.dismiss(animated: true)
+        let ac = UIAlertController(title: "Tem certeza?", message: "Após cancelar todas as alterações serão perdidas.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Sim ", style: .destructive, handler: {
+            action in
+            
+            self.dismiss(animated: true)
+        }))
+        ac.addAction(UIAlertAction(title: "Não", style: .cancel, handler: nil))
+        
+        self.present(ac, animated: true)
+        
     }
     
     @objc func saveObject() {
@@ -277,15 +286,15 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK: - Funcao botao de microfone
     @objc func medirDecibel() {
         let generator = UIImpactFeedbackGenerator(style: .heavy)
-        
+        generator.impactOccurred()
         if audioRecorder == nil {
             startRecording()
             microfone.image = UIImage(systemName: "mic")
-            generator.impactOccurred()
+            
         } else {
             finishRecording(success: true)
             microfone.image = UIImage(systemName: "mic.slash")
-            generator.impactOccurred()
+            
         }
     }
     
