@@ -199,9 +199,9 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         if let objeto = objeto, let intensidadeObjeto = intensidadeObjeto {
             objeto.imageName = imageNameObjeto
             objeto.intensidade = intensidadeObjeto
-            objeto.nome = nomeObjeto
-            objeto.classificacao = classificacaoObjeto
-            objeto.horarioUso = horarioObjeto
+            objeto.nome = "legal"
+            objeto.classificacao = "as"
+            objeto.horarioUso = "as"
             SoundRepository.shared.saveContext()
         } else {
             if let imageNameObjeto = imageNameObjeto, let intensidadeObjeto = intensidadeObjeto {
@@ -384,7 +384,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             audioRecorder.isMeteringEnabled = true
             audioRecorder.delegate = self
             audioRecorder.record()
-            time = Timer.scheduledTimer(timeInterval: 1/5, target: self, selector: #selector(measureIntensity), userInfo: nil, repeats: true)
+            time = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(measureIntensity), userInfo: nil, repeats: true)
             
             
         } catch {
@@ -394,10 +394,16 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func finishRecording(success: Bool) {
         var soma: Float = 0
+        
+        if valores.count > 0 {
+            valores.remove(at: 0)
+        }
+        
         for i in valores {
             soma += i
         }
         
+        print(valores)
         intensidadeObjeto = soma/Float(valores.count)
         decibelsCardLabel.text = "\(String(format: "%.2f", soma/Float(valores.count)))"
         time.invalidate()
@@ -407,8 +413,8 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func measureIntensity() {
+        var decibel = audioRecorder.peakPower(forChannel: 0)
         audioRecorder.updateMeters()
-        var decibel = audioRecorder.averagePower(forChannel: 0)
         
         let minDb: Float = -85
         
