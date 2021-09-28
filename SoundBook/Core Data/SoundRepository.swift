@@ -72,7 +72,7 @@ class SoundRepository {
     
     // MARK: - Core Data Creating support
     
-    func createObject(nome: String, intensidade: Float, imageName: String, horarioUso: String, classificacao: String) -> Objeto {
+    func createObject(nome: String, intensidade: Int64, imageName: String, horarioUso: String, classificacao: String) -> Objeto {
         let objeto = Objeto(context: self.persistentContainer.viewContext)
         
         objeto.nome = nome

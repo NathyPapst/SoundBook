@@ -37,7 +37,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     var imageNameObjeto: String?
     var classificacaoObjeto: String?
     var horarioObjeto: String?
-    var intensidadeObjeto: Float?
+    var intensidadeObjeto: Int64?
     
     var objeto: Objeto?
     
@@ -206,6 +206,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         } else {
             if let imageNameObjeto = imageNameObjeto, let intensidadeObjeto = intensidadeObjeto {
                 _ = SoundRepository.shared.createObject(nome: "Legal", intensidade: intensidadeObjeto, imageName: imageNameObjeto, horarioUso: "20h - 7h", classificacao: "Alto")
+                print("salvou")
             }
         }
         
@@ -263,10 +264,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             finishRecording(success: true)
             microfone.image = UIImage(systemName: "mic.slash")
             generator.impactOccurred()
-            
         }
-        
-        
     }
     
     // MARK: - Constraints da interface
@@ -404,8 +402,15 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         
         print(valores)
-        intensidadeObjeto = soma/Float(valores.count)
-        decibelsCardLabel.text = "\(String(format: "%.2f", soma/Float(valores.count)))"
+        
+        if soma/Float(valores.count) > 0 {
+            intensidadeObjeto = Int64(soma/Float(valores.count))
+        }
+        
+        if let intensidadeObjeto = intensidadeObjeto {
+            decibelsCardLabel.text = "\(intensidadeObjeto)"
+        }
+        
         time.invalidate()
         
         audioRecorder.stop()
