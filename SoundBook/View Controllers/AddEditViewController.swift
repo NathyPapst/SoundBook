@@ -171,6 +171,12 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             decibelsCardLabel.text = "\(objeto.intensidade)"
             classificacaoCardLabel.text = objeto.classificacao
             horarioCardLabel.text = objeto.horarioUso
+            
+            nomeObjeto = objeto.nome
+            intensidadeObjeto = objeto.intensidade
+            classificacaoObjeto = objeto.classificacao
+            horarioObjeto = objeto.horarioUso
+            imageNameObjeto = objeto.imageName
         }
         
         addConstraints()
@@ -198,9 +204,9 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func saveObject() {
-        if let objeto = objeto, let intensidadeObjeto = intensidadeObjeto {
+        if let objeto = objeto {
             objeto.imageName = imageNameObjeto
-            objeto.intensidade = intensidadeObjeto
+            objeto.intensidade = intensidadeObjeto!
             objeto.nome = nomeObjeto
             objeto.classificacao = classificacaoObjeto
             objeto.horarioUso = horarioObjeto
