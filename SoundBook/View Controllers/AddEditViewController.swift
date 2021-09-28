@@ -499,9 +499,6 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         return false
     }
     
-//    func textFieldDidEndEditing(_ textField: UITextField) {
-//        nomeObjeto = textField.text
-//    }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.addTarget(self, action: #selector(newValue), for: .editingChanged)
