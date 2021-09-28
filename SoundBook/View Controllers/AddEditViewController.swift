@@ -145,7 +145,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         horarioLabel.text = "Horário de uso"
         view.addSubview(horarioLabel)
         
-        instrucaoLabel.text = "Aperte o botao para medir o volume do som desejado e preencher as informaçoes abaixo automáticamente."
+        instrucaoLabel.text = "Aperte o botão para medir o volume do som desejado e preencher as informações abaixo automáticamente."
         instrucaoLabel.numberOfLines = 0
         instrucaoLabel.font = UIFont.systemFont(ofSize: 14)
         instrucaoLabel.textColor = .systemGray2
@@ -168,6 +168,13 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         if let objeto = objeto {
             let imagePath = getDocumentsDirectory().appendingPathComponent(objeto.imageName ?? "")
             photoImage.image = UIImage(contentsOfFile: imagePath.path)
+            photoImage.contentMode = .scaleAspectFit
+            photoImage.leadingAnchor.constraint(equalTo: addImageButton.leadingAnchor).isActive = true
+            photoImage.trailingAnchor.constraint(equalTo: addImageButton.trailingAnchor).isActive = true
+            photoImage.bottomAnchor.constraint(equalTo: addImageButton.bottomAnchor).isActive = true
+            photoImage.topAnchor.constraint(equalTo: addImageButton.topAnchor).isActive = true
+            
+            
             decibelsCardLabel.text = "\(objeto.intensidade)"
             classificacaoCardLabel.text = objeto.classificacao
             horarioCardLabel.text = objeto.horarioUso
@@ -253,6 +260,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         
         photoImage.image = UIImage(contentsOfFile: imagePath.path)
+        photoImage.contentMode = .scaleAspectFit
         photoImage.leadingAnchor.constraint(equalTo: addImageButton.leadingAnchor).isActive = true
         photoImage.trailingAnchor.constraint(equalTo: addImageButton.trailingAnchor).isActive = true
         photoImage.bottomAnchor.constraint(equalTo: addImageButton.bottomAnchor).isActive = true
@@ -419,10 +427,10 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         if soma/Float(valores.count) > 0 {
             intensidadeObjeto = Int64(soma/Float(valores.count))
-            if intensidadeObjeto! >= 70 {
+            if intensidadeObjeto! >= 65 {
                 classificacaoObjeto = "Alto"
                 horarioObjeto = "9h - 22h"
-            } else if intensidadeObjeto! >= 60 {
+            } else if intensidadeObjeto! >= 50 {
                 classificacaoObjeto = "Médio"
                 horarioObjeto = "9h - 22h"
             } else {
@@ -477,8 +485,10 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.selectionStyle = .none
             cell.backgroundColor = .systemGray6
             cell.placeHolder = "Ex: Liquidificador"
+            cell.dataTextField.text = objeto?.nome
             cell.dataTextField.delegate = self
             cell.dataTextField.tag = indexPath.row
+            
             return cell
         }
         return UITableViewCell()
@@ -489,9 +499,16 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         return false
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        nomeObjeto = textField.text
+//    func textFieldDidEndEditing(_ textField: UITextField) {
+//        nomeObjeto = textField.text
+//    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.addTarget(self, action: #selector(newValue), for: .editingChanged)
     }
     
+    @objc func newValue(_ textField: UITextField) {
+        nomeObjeto = textField.text ?? ""
+    }
     
 }

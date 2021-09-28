@@ -12,6 +12,7 @@ class CellStyle: UITableViewCell{
     var imageCell: UIImageView = {
         let image = UIImageView()
         image.backgroundColor = .systemBlue
+        image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
     }()
