@@ -168,7 +168,9 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         if let objeto = objeto {
             let imagePath = getDocumentsDirectory().appendingPathComponent(objeto.imageName ?? "")
             photoImage.image = UIImage(contentsOfFile: imagePath.path)
-            decibelsCardLabel.text = "\(String(format: "%.2f", objeto.intensidade))"
+            decibelsCardLabel.text = "\(objeto.intensidade)"
+            classificacaoCardLabel.text = objeto.classificacao
+            horarioCardLabel.text = objeto.horarioUso
         }
         
         addConstraints()
@@ -199,19 +201,25 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         if let objeto = objeto, let intensidadeObjeto = intensidadeObjeto {
             objeto.imageName = imageNameObjeto
             objeto.intensidade = intensidadeObjeto
-            objeto.nome = "legal"
-            objeto.classificacao = "as"
-            objeto.horarioUso = "as"
+            objeto.nome = nomeObjeto
+            objeto.classificacao = classificacaoObjeto
+            objeto.horarioUso = horarioObjeto
             SoundRepository.shared.saveContext()
+            self.isDismissed?()
+            dismiss(animated: true)
         } else {
-            if let imageNameObjeto = imageNameObjeto, let intensidadeObjeto = intensidadeObjeto {
-                _ = SoundRepository.shared.createObject(nome: "Legal", intensidade: intensidadeObjeto, imageName: imageNameObjeto, horarioUso: "20h - 7h", classificacao: "Alto")
-                print("salvou")
+            if let imageNameObjeto = imageNameObjeto, let intensidadeObjeto = intensidadeObjeto, let classificacaoObjeto = classificacaoObjeto, let horarioObjeto = horarioObjeto, let nomeObjeto = nomeObjeto {
+                _ = SoundRepository.shared.createObject(nome: nomeObjeto, intensidade: intensidadeObjeto, imageName: imageNameObjeto, horarioUso: horarioObjeto, classificacao: classificacaoObjeto)
+                self.isDismissed?()
+                dismiss(animated: true)
+            } else {
+                let ac = UIAlertController(title: "Algum dado está vazio", message: "Verfique se todos os campos foram preenchidos corretamente.", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(ac, animated: true)
             }
         }
         
-        self.isDismissed?()
-        dismiss(animated: true)
+        
         
         
     }
@@ -405,11 +413,23 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         if soma/Float(valores.count) > 0 {
             intensidadeObjeto = Int64(soma/Float(valores.count))
+            if intensidadeObjeto! >= 70 {
+                classificacaoObjeto = "Alto"
+                horarioObjeto = "9h - 22h"
+            } else if intensidadeObjeto! >= 60 {
+                classificacaoObjeto = "Médio"
+                horarioObjeto = "9h - 22h"
+            } else {
+                classificacaoObjeto = "Baixo"
+                horarioObjeto = "00h - 24h"
+            }
+            
+            decibelsCardLabel.text = "\(intensidadeObjeto!)"
+            classificacaoCardLabel.text = classificacaoObjeto
+            horarioCardLabel.text = horarioObjeto
         }
         
-        if let intensidadeObjeto = intensidadeObjeto {
-            decibelsCardLabel.text = "\(intensidadeObjeto)"
-        }
+        
         
         time.invalidate()
         
@@ -421,16 +441,16 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         var decibel = audioRecorder.peakPower(forChannel: 0)
         audioRecorder.updateMeters()
         
-        let minDb: Float = -85
+        let minDb: Float = -80
         
         // 2
         if decibel < minDb {
             decibel = 0.0
         } else if decibel >= 1.0 {
-            decibel = 85
+            decibel -= minDb
         } else {
           // 3
-            decibel += 85
+            decibel -= minDb
         }
         
         print(decibel)
@@ -461,6 +481,10 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        nomeObjeto = textField.text
     }
     
     
