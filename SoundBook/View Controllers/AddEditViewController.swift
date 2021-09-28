@@ -145,7 +145,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         horarioLabel.text = "Horário de uso"
         view.addSubview(horarioLabel)
         
-        instrucaoLabel.text = "Aperte o botao para medir o volume do som desejado e preencher as informaçoes abaixo automáticamente."
+        instrucaoLabel.text = "Aperte o botão para medir o volume do som desejado e preencher as informações abaixo automáticamente."
         instrucaoLabel.numberOfLines = 0
         instrucaoLabel.font = UIFont.systemFont(ofSize: 14)
         instrucaoLabel.textColor = .systemGray2
@@ -168,7 +168,22 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         if let objeto = objeto {
             let imagePath = getDocumentsDirectory().appendingPathComponent(objeto.imageName ?? "")
             photoImage.image = UIImage(contentsOfFile: imagePath.path)
-            decibelsCardLabel.text = "\(String(format: "%.2f", objeto.intensidade))"
+            photoImage.contentMode = .scaleAspectFit
+            photoImage.leadingAnchor.constraint(equalTo: addImageButton.leadingAnchor).isActive = true
+            photoImage.trailingAnchor.constraint(equalTo: addImageButton.trailingAnchor).isActive = true
+            photoImage.bottomAnchor.constraint(equalTo: addImageButton.bottomAnchor).isActive = true
+            photoImage.topAnchor.constraint(equalTo: addImageButton.topAnchor).isActive = true
+            
+            
+            decibelsCardLabel.text = "\(objeto.intensidade)"
+            classificacaoCardLabel.text = objeto.classificacao
+            horarioCardLabel.text = objeto.horarioUso
+            
+            nomeObjeto = objeto.nome
+            intensidadeObjeto = objeto.intensidade
+            classificacaoObjeto = objeto.classificacao
+            horarioObjeto = objeto.horarioUso
+            imageNameObjeto = objeto.imageName
         }
         
         addConstraints()
@@ -192,26 +207,41 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func popView() {
-        self.dismiss(animated: true)
+        let ac = UIAlertController(title: "Tem certeza?", message: "Após cancelar todas as alterações serão perdidas.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Sim ", style: .destructive, handler: {
+            action in
+            
+            self.dismiss(animated: true)
+        }))
+        ac.addAction(UIAlertAction(title: "Não", style: .cancel, handler: nil))
+        
+        self.present(ac, animated: true)
+        
     }
     
     @objc func saveObject() {
-        if let objeto = objeto, let intensidadeObjeto = intensidadeObjeto {
+        if let objeto = objeto {
             objeto.imageName = imageNameObjeto
-            objeto.intensidade = intensidadeObjeto
-            objeto.nome = "legal"
-            objeto.classificacao = "as"
-            objeto.horarioUso = "as"
+            objeto.intensidade = intensidadeObjeto!
+            objeto.nome = nomeObjeto
+            objeto.classificacao = classificacaoObjeto
+            objeto.horarioUso = horarioObjeto
             SoundRepository.shared.saveContext()
+            self.isDismissed?()
+            dismiss(animated: true)
         } else {
-            if let imageNameObjeto = imageNameObjeto, let intensidadeObjeto = intensidadeObjeto {
-                _ = SoundRepository.shared.createObject(nome: "Legal", intensidade: intensidadeObjeto, imageName: imageNameObjeto, horarioUso: "20h - 7h", classificacao: "Alto")
-                print("salvou")
+            if let imageNameObjeto = imageNameObjeto, let intensidadeObjeto = intensidadeObjeto, let classificacaoObjeto = classificacaoObjeto, let horarioObjeto = horarioObjeto, let nomeObjeto = nomeObjeto {
+                _ = SoundRepository.shared.createObject(nome: nomeObjeto, intensidade: intensidadeObjeto, imageName: imageNameObjeto, horarioUso: horarioObjeto, classificacao: classificacaoObjeto)
+                self.isDismissed?()
+                dismiss(animated: true)
+            } else {
+                let ac = UIAlertController(title: "Algum dado está vazio", message: "Verfique se todos os campos foram preenchidos corretamente.", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(ac, animated: true)
             }
         }
         
-        self.isDismissed?()
-        dismiss(animated: true)
+        
         
         
     }
@@ -239,6 +269,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         
         photoImage.image = UIImage(contentsOfFile: imagePath.path)
+        photoImage.contentMode = .scaleAspectFit
         photoImage.leadingAnchor.constraint(equalTo: addImageButton.leadingAnchor).isActive = true
         photoImage.trailingAnchor.constraint(equalTo: addImageButton.trailingAnchor).isActive = true
         photoImage.bottomAnchor.constraint(equalTo: addImageButton.bottomAnchor).isActive = true
@@ -255,15 +286,15 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK: - Funcao botao de microfone
     @objc func medirDecibel() {
         let generator = UIImpactFeedbackGenerator(style: .heavy)
-        
+        generator.impactOccurred()
         if audioRecorder == nil {
             startRecording()
             microfone.image = UIImage(systemName: "mic")
-            generator.impactOccurred()
+            
         } else {
             finishRecording(success: true)
             microfone.image = UIImage(systemName: "mic.slash")
-            generator.impactOccurred()
+            
         }
     }
     
@@ -405,11 +436,23 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         if soma/Float(valores.count) > 0 {
             intensidadeObjeto = Int64(soma/Float(valores.count))
+            if intensidadeObjeto! >= 65 {
+                classificacaoObjeto = "Alto"
+                horarioObjeto = "9h - 22h"
+            } else if intensidadeObjeto! >= 50 {
+                classificacaoObjeto = "Médio"
+                horarioObjeto = "9h - 22h"
+            } else {
+                classificacaoObjeto = "Baixo"
+                horarioObjeto = "00h - 24h"
+            }
+            
+            decibelsCardLabel.text = "\(intensidadeObjeto!)"
+            classificacaoCardLabel.text = classificacaoObjeto
+            horarioCardLabel.text = horarioObjeto
         }
         
-        if let intensidadeObjeto = intensidadeObjeto {
-            decibelsCardLabel.text = "\(intensidadeObjeto)"
-        }
+        
         
         time.invalidate()
         
@@ -421,16 +464,16 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         var decibel = audioRecorder.peakPower(forChannel: 0)
         audioRecorder.updateMeters()
         
-        let minDb: Float = -85
+        let minDb: Float = -80
         
         // 2
         if decibel < minDb {
             decibel = 0.0
         } else if decibel >= 1.0 {
-            decibel = 85
+            decibel -= minDb
         } else {
           // 3
-            decibel += 85
+            decibel -= minDb
         }
         
         print(decibel)
@@ -451,8 +494,10 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.selectionStyle = .none
             cell.backgroundColor = .systemGray6
             cell.placeHolder = "Ex: Liquidificador"
+            cell.dataTextField.text = objeto?.nome
             cell.dataTextField.delegate = self
             cell.dataTextField.tag = indexPath.row
+            
             return cell
         }
         return UITableViewCell()
@@ -463,5 +508,13 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         return false
     }
     
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.addTarget(self, action: #selector(newValue), for: .editingChanged)
+    }
+    
+    @objc func newValue(_ textField: UITextField) {
+        nomeObjeto = textField.text ?? ""
+    }
     
 }

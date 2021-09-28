@@ -302,10 +302,40 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
             cell.titleLabel.text = objetos[indexPath.row].nome
             cell.imageCell.image = UIImage(contentsOfFile: imagePath.path)
             cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao!)"
+            cell.editButton.tag = indexPath.row
+            cell.editButton.addTarget(self, action: #selector(editarOBjeto(_:)), for: .touchUpInside)
+            cell.eraseButton.tag = indexPath.row
+            cell.eraseButton.addTarget(self, action: #selector(deletarObjeto(_:)), for: .touchUpInside)
             return cell
         }
         
         return UITableViewCell()
+    }
+    
+    @objc func editarOBjeto(_ sender: UIButton) {
+        let root = AddEditViewController()
+        let vc = UINavigationController(rootViewController: root)
+        vc.modalPresentationStyle = .automatic
+        
+        let objeto = SoundRepository.shared.getAllObjects()[sender.tag]
+        root.objeto = objeto
+        root.isDismissed = { [weak self] in
+            self?.tableView.reloadData()
+        }
+        self.present(vc, animated: true)
+    }
+    
+    @objc func deletarObjeto(_ sender: UIButton) {
+        let ac = UIAlertController(title: "Tem certeza?", message: "Após deletar não será possível desfazer a alteração.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Deletar", style: .destructive, handler: {
+            action in
+            
+            SoundRepository.shared.deleteObject(object: SoundRepository.shared.getAllObjects()[sender.tag])
+            self.tableView.reloadData()
+        }))
+        ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
+        
+        self.present(ac, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -318,13 +348,13 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         let deleteAction = UIContextualAction(style: .normal, title:  "Delete", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             success(true)
             let ac = UIAlertController(title: "Tem certeza?", message: "Após deletar não será possível desfazer a alteração.", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
             ac.addAction(UIAlertAction(title: "Deletar", style: .destructive, handler: {
                 action in
                 
                 SoundRepository.shared.deleteObject(object: SoundRepository.shared.getAllObjects()[indexPath.row])
                 tableView.reloadData()
             }))
+            ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
             
             self.present(ac, animated: true)
             
@@ -353,6 +383,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
     }
+    
     
     
 }

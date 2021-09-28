@@ -52,11 +52,11 @@ class CellStyleEdit: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         imageCell.layer.cornerRadius = (self.frame.height/3.5)
-        self.addSubview(imageCell)
-        self.addSubview(titleLabel)
-        self.addSubview(infoSoundLabel)
-        self.addSubview(editButton)
-        self.addSubview(eraseButton)
+        self.contentView.addSubview(imageCell)
+        self.contentView.addSubview(titleLabel)
+        self.contentView.addSubview(infoSoundLabel)
+        self.contentView.addSubview(editButton)
+        self.contentView.addSubview(eraseButton)
         addConstraints()
         
     }
