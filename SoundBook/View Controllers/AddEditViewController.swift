@@ -240,10 +240,6 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
                 self.present(ac, animated: true)
             }
         }
-        
-        
-        
-        
     }
     
     // MARK: - Funçoes UIImagePicker
