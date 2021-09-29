@@ -216,6 +216,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         ac.addAction(UIAlertAction(title: "Sim ", style: .destructive, handler: {
             action in
             self.generatorNotification.notificationOccurred(.success)
+            self.isDismissed?()
             self.dismiss(animated: true)
         }))
         ac.addAction(UIAlertAction(title: "Não", style: .cancel, handler: nil))

@@ -242,6 +242,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     @objc func addObject(){
+        stopRecording()
         let root = AddEditViewController()
         let vc = UINavigationController(rootViewController: root)
         vc.modalPresentationStyle = .automatic
@@ -260,6 +261,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
                 break
             }
             self?.tableView.reloadData()
+            self?.medirDecibel()
         }
         present(vc, animated: true)
     }
@@ -401,6 +403,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     @objc func deletarObjeto(_ sender: UIButton) {
+        stopRecording()
         let ac = UIAlertController(title: "Tem certeza?", message: "Após deletar não será possível desfazer a alteração.", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "Deletar", style: .destructive, handler: {
             action in
@@ -409,10 +412,12 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
             self.filtered.remove(at: sender.tag)
             self.tableView.reloadData()
             self.generatorNotification.notificationOccurred(.success)
+            
         }))
         ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
         
         self.present(ac, animated: true)
+        self.medirDecibel()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -464,9 +469,6 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     func medirDecibel() {
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
-        
         if audioRecorder == nil {
             startRecording()
         }
@@ -494,6 +496,12 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         } catch {
             
         }
+    }
+    
+    func stopRecording() {
+        time.invalidate()
+        audioRecorder.stop()
+        audioRecorder = nil
     }
     
     @objc func measureIntensity() {
