@@ -36,6 +36,10 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     var intenseViews: [UIView] = [UIView]()
     var filtered = SoundRepository.shared.getAllObjects()
     
+    // haptic feedback
+    let generatorNotification = UINotificationFeedbackGenerator()
+    let generatorFeedback = UIImpactFeedbackGenerator(style: .light)
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -180,6 +184,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     
     @objc func segmentedValueChanged(_ sender:UISegmentedControl!)
     {
+        generatorFeedback.impactOccurred()
         switch sender.selectedSegmentIndex {
         case 0:
             filtered = SoundRepository.shared.getAllObjects()
@@ -382,6 +387,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
             SoundRepository.shared.deleteObject(object: self.filtered[sender.tag])
             self.filtered.remove(at: sender.tag)
             self.tableView.reloadData()
+            self.generatorNotification.notificationOccurred(.success)
         }))
         ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
         
@@ -404,6 +410,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
                 SoundRepository.shared.deleteObject(object: self.filtered[indexPath.row])
                 self.filtered.remove(at: indexPath.row)
                 tableView.reloadData()
+                self.generatorNotification.notificationOccurred(.success)
             }))
             ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
             
