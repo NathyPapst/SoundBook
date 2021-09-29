@@ -158,6 +158,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         do {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
             try recordingSession.setActive(true)
+            try recordingSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
             recordingSession.requestRecordPermission() { allowed in
                 DispatchQueue.main.async {
                     if allowed {
@@ -403,7 +404,6 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     @objc func deletarObjeto(_ sender: UIButton) {
-        stopRecording()
         let ac = UIAlertController(title: "Tem certeza?", message: "Após deletar não será possível desfazer a alteração.", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "Deletar", style: .destructive, handler: {
             action in
@@ -417,7 +417,6 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
         
         self.present(ac, animated: true)
-        self.medirDecibel()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -197,6 +197,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         do {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
             try recordingSession.setActive(true)
+            try recordingSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
             recordingSession.requestRecordPermission() { allowed in
                 DispatchQueue.main.async {
                     if allowed {
