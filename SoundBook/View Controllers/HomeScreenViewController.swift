@@ -31,6 +31,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         return table
     }()
     
+    var segmentedControlCustom: UISegmentedControl!
+    
     var intenseViews: [UIView] = [UIView]()
     var filtered = SoundRepository.shared.getAllObjects()
     
@@ -45,7 +47,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         //cria a segmented
         let items = ["Todos", "Alto", "Médio", "Baixo"]
-        let segmentedControlCustom = UISegmentedControl(items: items)
+        segmentedControlCustom = UISegmentedControl(items: items)
         segmentedControlCustom.selectedSegmentIndex = 0
         
         let xPostion:CGFloat = 10
@@ -218,6 +220,19 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         let vc = UINavigationController(rootViewController: root)
         vc.modalPresentationStyle = .automatic
         root.isDismissed = { [weak self] in
+            switch self?.segmentedControlCustom.selectedSegmentIndex {
+            case 0:
+                self?.filtered = SoundRepository.shared.getAllObjects()
+            case 1:
+                self?.filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Alto") }
+            case 2:
+                self?.filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Médio") }
+            case 3:
+                self?.filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Baixo") }
+            default:
+                self?.filtered = SoundRepository.shared.getAllObjects()
+                break
+            }
             self?.tableView.reloadData()
         }
         present(vc, animated: true)
@@ -226,7 +241,20 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     
     func searchBar(_ searchBar: UISearchBar, textDidChange textSearched: String) {
         if textSearched.isEmpty {
-            filtered = SoundRepository.shared.getAllObjects()
+            switch segmentedControlCustom.selectedSegmentIndex {
+            case 0:
+                filtered = SoundRepository.shared.getAllObjects()
+            case 1:
+                filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Alto") }
+            case 2:
+                filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Médio") }
+            case 3:
+                filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Baixo") }
+            default:
+                filtered = SoundRepository.shared.getAllObjects()
+                break
+            }
+            tableView.reloadData()
         } else {
             filtered = filtered.filter { $0.nome?.lowercased().contains(textSearched.lowercased()) as! Bool }
         }
