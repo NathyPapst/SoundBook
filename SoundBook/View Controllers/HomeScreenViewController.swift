@@ -6,13 +6,14 @@
 //
 
 import UIKit
+import AVFoundation
 
 enum ViewControllerType{
     case home
     case edit
 }
 
-class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate {
+class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate, AVAudioRecorderDelegate {
     
     var buttonEditOK: UIBarButtonItem!
     var buttonAdd: UIBarButtonItem!
@@ -34,6 +35,10 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     var segmentedControlCustom: UISegmentedControl!
     
     var intenseViews: [UIView] = [UIView]()
+    var recordingSession: AVAudioSession!
+    var audioRecorder: AVAudioRecorder!
+    var time = Timer()
+    var valores = [Float]()
     var filtered = SoundRepository.shared.getAllObjects()
     
     
@@ -87,16 +92,13 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         decibelSpace.backgroundColor = .systemGray3
         decibelSpace.isHidden = true
         
-        
-        indicatorLabel.text = "120 dB"
         indicatorLabel.textColor = UIColor(named: "textColor")
-        indicatorLabel.font = .systemFont(ofSize: (view.frame.height * 0.028), weight: .regular)
+        indicatorLabel.font = .systemFont(ofSize: 20, weight: .regular)
         
         highLabel.text = "Alto"
         highLabel.textColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
         highLabel.font = .systemFont(ofSize: (18), weight: .semibold)
-        
-        
+    
         moderateLabel.text = "Médio"
         moderateLabel.textColor = UIColor(named: "moderateColor")
         moderateLabel.font = .systemFont(ofSize: (18), weight: .semibold)
@@ -147,6 +149,25 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         segmentedControlCustom.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         
         // Do any additional setup after loading the view.
+        
+        recordingSession = AVAudioSession.sharedInstance()
+        do {
+            try recordingSession.setCategory(.playAndRecord, mode: .default)
+            try recordingSession.setActive(true)
+            recordingSession.requestRecordPermission() { allowed in
+                DispatchQueue.main.async {
+                    if allowed {
+                        print("allowed")
+                    } else {
+                        print("Erro ao tentar gravar")
+                    }
+                }
+            }
+        } catch {
+            print("Erro ao tentar gravar")
+        }
+        
+        medirDecibel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -269,7 +290,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         //constraints do sound intensity
         soundIntensityLabel.translatesAutoresizingMaskIntoConstraints = false
-        soundIntensityLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height/7).isActive = true
+        soundIntensityLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height/9).isActive = true
         soundIntensityLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 34).isActive = true
         soundIntensityLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -34).isActive = true
         
@@ -282,7 +303,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         //constraints indicatorLabel
         indicatorLabel.translatesAutoresizingMaskIntoConstraints = false
-        indicatorLabel.leadingAnchor.constraint(equalTo: decibelSpace.trailingAnchor, constant: 10).isActive = true
+        indicatorLabel.leadingAnchor.constraint(equalTo: decibelSpace.trailingAnchor, constant: 30).isActive = true
         indicatorLabel.topAnchor.constraint(equalTo: soundIntensityLabel.bottomAnchor, constant: view.frame.height/30).isActive = true
         indicatorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         
@@ -433,6 +454,241 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
+    }
+    
+    func medirDecibel() {
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
+        
+        if audioRecorder == nil {
+            startRecording()
+        }
+    }
+    
+    func startRecording() {
+        let audioFilename = getDocumentsDirectory().appendingPathComponent("recording.m4a")
+        valores.removeAll()
+        
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+        
+        do {
+            audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
+            audioRecorder.isMeteringEnabled = true
+            audioRecorder.delegate = self
+            audioRecorder.record()
+            time = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(measureIntensity), userInfo: nil, repeats: true)
+            
+            
+        } catch {
+            
+        }
+    }
+    
+    @objc func measureIntensity() {
+        var decibel = audioRecorder.peakPower(forChannel: 0)
+        audioRecorder.updateMeters()
+        
+        let minDb: Float = -80
+        
+        // 2
+        if decibel < minDb {
+            decibel = 0.0
+        } else if decibel >= 1.0 {
+            decibel -= minDb
+        } else {
+          // 3
+            decibel -= minDb
+        }
+        
+        print(decibel)
+        valores.append(decibel)
+        indicatorLabel.text = "\(Int(decibel))"
+        changeColor(decibel: (Int(decibel)))
+    }
+    
+    func changeColor(decibel: Int) {
+        for i in 0..<12 {
+            if decibel >= 0 && decibel <= 12 {
+                intenseViews[0].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                
+                if i != 0 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 12 && decibel <= 24 {
+                if i <= 1 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                else {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 24 && decibel <= 36 {
+                if i <= 2 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                else {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 36 && decibel <= 49 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                else {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 49 && decibel <= 52 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i == 4{
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i > 4 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 52 && decibel <= 56 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4{
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i > 5 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 56 && decibel <= 60 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4{
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i > 6 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 60 && decibel <= 64 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4{
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i > 7 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 64 && decibel <= 78 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i == 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+            }
+            
+            if decibel > 78 && decibel <= 92 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i >= 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+                
+                if i > 9 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 92 && decibel <= 106 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i >= 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+                
+                if i > 10 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 106 && decibel <= 120 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i >= 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+                
+                if i > 11 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 120 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i >= 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+            }
+        }
     }
     
     
