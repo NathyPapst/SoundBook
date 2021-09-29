@@ -89,7 +89,6 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         decibelSpace.backgroundColor = .systemGray3
         decibelSpace.isHidden = true
         
-        
         indicatorLabel.text = "120 dB"
         indicatorLabel.textColor = UIColor(named: "textColor")
         indicatorLabel.font = .systemFont(ofSize: (view.frame.height * 0.028), weight: .regular)
@@ -97,8 +96,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         highLabel.text = "Alto"
         highLabel.textColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
         highLabel.font = .systemFont(ofSize: (18), weight: .semibold)
-        
-        
+    
         moderateLabel.text = "Médio"
         moderateLabel.textColor = UIColor(named: "moderateColor")
         moderateLabel.font = .systemFont(ofSize: (18), weight: .semibold)
@@ -460,6 +458,63 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         print(decibel)
         valores.append(decibel)
         indicatorLabel.text = "\(Int(decibel))"
+        changeColor(decibel: (Int(decibel)))
+    }
+    
+    func changeColor(decibel: Int) {
+        for i in 0..<12 {
+            if decibel >= 0 && decibel <= 12 {
+                intenseViews[0].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                
+                if i != 0 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 12 && decibel <= 24 {
+                if i <= 1 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                else {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 24 && decibel <= 36 {
+                if i <= 2 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                else {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 36 && decibel <= 49 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                else {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 49 && decibel <= 52 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i == 4{
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i > 4 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+        }
     }
     
     
