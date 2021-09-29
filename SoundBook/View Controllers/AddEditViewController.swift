@@ -52,7 +52,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // haptic feedback
     let generatorNotification = UINotificationFeedbackGenerator()
-    let generatorFeedback = UIImpactFeedbackGenerator(style: .heavy)
+    
     
     
     override func viewDidLoad() {
@@ -295,15 +295,17 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // MARK: - Funcao botao de microfone
     @objc func medirDecibel() {
-        generatorFeedback.impactOccurred()
         if audioRecorder == nil {
             
             microfone.image = UIImage(systemName: "mic")
             startRecording()
+            self.generatorNotification.notificationOccurred(.success)
         } else {
             
             microfone.image = UIImage(systemName: "mic.slash")
             finishRecording(success: true)
+            self.generatorNotification.notificationOccurred(.error)
+            
         }
     }
     
