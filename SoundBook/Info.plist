@@ -58,7 +58,7 @@
 	</array>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Precisamos acessar o seu microfone para medir e mostrar a intensidade do som</string>
-	<key>NSAppleMusicUsageDescription</key>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Precisamos acessar sua galeria de fotos para salvar a imagem do objeto</string>
 </dict>
 </plist>

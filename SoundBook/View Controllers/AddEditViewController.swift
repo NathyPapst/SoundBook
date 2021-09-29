@@ -50,6 +50,11 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     // var para dar reload na tableView anterior
     var isDismissed: (() -> Void)?
     
+    // haptic feedback
+    let generatorNotification = UINotificationFeedbackGenerator()
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
@@ -192,6 +197,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         do {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
             try recordingSession.setActive(true)
+            try recordingSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
             recordingSession.requestRecordPermission() { allowed in
                 DispatchQueue.main.async {
                     if allowed {
@@ -210,16 +216,19 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         let ac = UIAlertController(title: "Tem certeza?", message: "Após cancelar todas as alterações serão perdidas.", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "Sim ", style: .destructive, handler: {
             action in
-            
+            self.generatorNotification.notificationOccurred(.success)
+            self.isDismissed?()
             self.dismiss(animated: true)
         }))
         ac.addAction(UIAlertAction(title: "Não", style: .cancel, handler: nil))
         
+        self.generatorNotification.notificationOccurred(.warning)
         self.present(ac, animated: true)
         
     }
     
     @objc func saveObject() {
+        
         if let objeto = objeto {
             objeto.imageName = imageNameObjeto
             objeto.intensidade = intensidadeObjeto!
@@ -227,16 +236,19 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             objeto.classificacao = classificacaoObjeto
             objeto.horarioUso = horarioObjeto
             SoundRepository.shared.saveContext()
+            generatorNotification.notificationOccurred(.success)
             self.isDismissed?()
             dismiss(animated: true)
         } else {
             if let imageNameObjeto = imageNameObjeto, let intensidadeObjeto = intensidadeObjeto, let classificacaoObjeto = classificacaoObjeto, let horarioObjeto = horarioObjeto, let nomeObjeto = nomeObjeto {
                 _ = SoundRepository.shared.createObject(nome: nomeObjeto, intensidade: intensidadeObjeto, imageName: imageNameObjeto, horarioUso: horarioObjeto, classificacao: classificacaoObjeto)
+                generatorNotification.notificationOccurred(.success)
                 self.isDismissed?()
                 dismiss(animated: true)
             } else {
                 let ac = UIAlertController(title: "Algum dado está vazio", message: "Verfique se todos os campos foram preenchidos corretamente.", preferredStyle: .alert)
                 ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                generatorNotification.notificationOccurred(.warning)
                 self.present(ac, animated: true)
             }
         }
@@ -251,6 +263,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         picker.delegate = self
         present(picker, animated: true)
     }
+    
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.editedImage] as? UIImage else { return }
@@ -271,6 +284,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         photoImage.bottomAnchor.constraint(equalTo: addImageButton.bottomAnchor).isActive = true
         photoImage.topAnchor.constraint(equalTo: addImageButton.topAnchor).isActive = true
         
+        generatorNotification.notificationOccurred(.success)
         dismiss(animated: true)
     }
     
@@ -281,15 +295,16 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // MARK: - Funcao botao de microfone
     @objc func medirDecibel() {
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
         if audioRecorder == nil {
-            startRecording()
-            microfone.image = UIImage(systemName: "mic")
             
+            microfone.image = UIImage(systemName: "mic")
+            startRecording()
+            self.generatorNotification.notificationOccurred(.success)
         } else {
-            finishRecording(success: true)
+            
             microfone.image = UIImage(systemName: "mic.slash")
+            finishRecording(success: true)
+            self.generatorNotification.notificationOccurred(.error)
             
         }
     }

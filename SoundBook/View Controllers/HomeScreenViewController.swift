@@ -41,6 +41,10 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     var valores = [Float]()
     var filtered = SoundRepository.shared.getAllObjects()
     
+    // haptic feedback
+    let generatorNotification = UINotificationFeedbackGenerator()
+    let generatorFeedback = UIImpactFeedbackGenerator(style: .light)
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -154,6 +158,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         do {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
             try recordingSession.setActive(true)
+            try recordingSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
             recordingSession.requestRecordPermission() { allowed in
                 DispatchQueue.main.async {
                     if allowed {
@@ -201,6 +206,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     
     @objc func segmentedValueChanged(_ sender:UISegmentedControl!)
     {
+        generatorFeedback.impactOccurred()
         switch sender.selectedSegmentIndex {
         case 0:
             filtered = SoundRepository.shared.getAllObjects()
@@ -237,6 +243,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     @objc func addObject(){
+        stopRecording()
         let root = AddEditViewController()
         let vc = UINavigationController(rootViewController: root)
         vc.modalPresentationStyle = .automatic
@@ -255,6 +262,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
                 break
             }
             self?.tableView.reloadData()
+            self?.medirDecibel()
         }
         present(vc, animated: true)
     }
@@ -403,6 +411,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
             SoundRepository.shared.deleteObject(object: self.filtered[sender.tag])
             self.filtered.remove(at: sender.tag)
             self.tableView.reloadData()
+            self.generatorNotification.notificationOccurred(.success)
+            
         }))
         ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
         
@@ -425,6 +435,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
                 SoundRepository.shared.deleteObject(object: self.filtered[indexPath.row])
                 self.filtered.remove(at: indexPath.row)
                 tableView.reloadData()
+                self.generatorNotification.notificationOccurred(.success)
             }))
             ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
             
@@ -457,9 +468,6 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     func medirDecibel() {
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
-        
         if audioRecorder == nil {
             startRecording()
         }
@@ -487,6 +495,12 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         } catch {
             
         }
+    }
+    
+    func stopRecording() {
+        time.invalidate()
+        audioRecorder.stop()
+        audioRecorder = nil
     }
     
     @objc func measureIntensity() {
