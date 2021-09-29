@@ -514,6 +514,130 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
                     intenseViews[i].backgroundColor = .gray
                 }
             }
+            
+            if decibel > 52 && decibel <= 56 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4{
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i > 5 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 56 && decibel <= 60 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4{
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i > 6 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 60 && decibel <= 64 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4{
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i > 7 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 64 && decibel <= 78 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i == 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+            }
+            
+            if decibel > 78 && decibel <= 92 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i >= 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+                
+                if i > 9 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 92 && decibel <= 106 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i >= 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+                
+                if i > 10 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 106 && decibel <= 120 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i >= 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+                
+                if i > 11 {
+                    intenseViews[i].backgroundColor = .gray
+                }
+            }
+            
+            if decibel > 120 {
+                if i <= 3 {
+                    intenseViews[i].backgroundColor = UIColor(red: 51.0/255.0, green: 219.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+                }
+                
+                if i >= 4 && i <= 7 {
+                    intenseViews[i].backgroundColor = UIColor(named: "moderateColor")
+                }
+                
+                if i >= 8 {
+                    intenseViews[i].backgroundColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
+                }
+            }
         }
     }
     
