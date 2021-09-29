@@ -262,6 +262,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         present(picker, animated: true)
     }
     
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.editedImage] as? UIImage else { return }
         
@@ -294,13 +295,13 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
     @objc func medirDecibel() {
         generatorFeedback.impactOccurred()
         if audioRecorder == nil {
-            startRecording()
+            
             microfone.image = UIImage(systemName: "mic")
-            
+            startRecording()
         } else {
-            finishRecording(success: true)
-            microfone.image = UIImage(systemName: "mic.slash")
             
+            microfone.image = UIImage(systemName: "mic.slash")
+            finishRecording(success: true)
         }
     }
     
