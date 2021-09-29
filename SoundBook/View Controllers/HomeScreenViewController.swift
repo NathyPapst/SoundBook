@@ -89,9 +89,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         decibelSpace.backgroundColor = .systemGray3
         decibelSpace.isHidden = true
         
-        indicatorLabel.text = "120 dB"
         indicatorLabel.textColor = UIColor(named: "textColor")
-        indicatorLabel.font = .systemFont(ofSize: (view.frame.height * 0.028), weight: .regular)
+        indicatorLabel.font = .systemFont(ofSize: 20, weight: .regular)
         
         highLabel.text = "Alto"
         highLabel.textColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
@@ -243,7 +242,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         //constraints do sound intensity
         soundIntensityLabel.translatesAutoresizingMaskIntoConstraints = false
-        soundIntensityLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height/7).isActive = true
+        soundIntensityLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height/9).isActive = true
         soundIntensityLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 34).isActive = true
         soundIntensityLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -34).isActive = true
         
@@ -256,7 +255,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         //constraints indicatorLabel
         indicatorLabel.translatesAutoresizingMaskIntoConstraints = false
-        indicatorLabel.leadingAnchor.constraint(equalTo: decibelSpace.trailingAnchor, constant: 10).isActive = true
+        indicatorLabel.leadingAnchor.constraint(equalTo: decibelSpace.trailingAnchor, constant: 30).isActive = true
         indicatorLabel.topAnchor.constraint(equalTo: soundIntensityLabel.bottomAnchor, constant: view.frame.height/30).isActive = true
         indicatorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         
