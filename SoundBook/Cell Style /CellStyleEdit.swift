@@ -90,13 +90,13 @@ class CellStyleEdit: UITableViewCell {
         
         //constraint editButton
         editButton.translatesAutoresizingMaskIntoConstraints = false
-        editButton.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        editButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 10).isActive = true
         editButton.leadingAnchor.constraint(equalTo: infoSoundLabel.trailingAnchor, constant: 40).isActive = true
 
         
         //constraint eraseButton
         eraseButton.translatesAutoresizingMaskIntoConstraints = false
-        eraseButton.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        eraseButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 10).isActive = true
         eraseButton.leadingAnchor.constraint(equalTo: infoSoundLabel.trailingAnchor, constant: 100).isActive = true
         
     }
