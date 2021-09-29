@@ -31,20 +31,23 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         return table
     }()
     
+    var segmentedControlCustom: UISegmentedControl!
+    
     var intenseViews: [UIView] = [UIView]()
+    var filtered = SoundRepository.shared.getAllObjects()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        _ = SoundRepository.shared.createObject(nome: "Luca", intensidade: 50, imageName: "", horarioUso: "20h - 7h", classificacao: "Alto")
+        //        _ = SoundRepository.shared.createObject(nome: "Luca", intensidade: 50, imageName: "", horarioUso: "20h - 7h", classificacao: "Alto")
         
         tableView.dataSource = self
         tableView.delegate = self
         
         //cria a segmented
         let items = ["Todos", "Alto", "Médio", "Baixo"]
-        let segmentedControlCustom = UISegmentedControl(items: items)
+        segmentedControlCustom = UISegmentedControl(items: items)
         segmentedControlCustom.selectedSegmentIndex = 0
         
         let xPostion:CGFloat = 10
@@ -55,7 +58,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         segmentedControlCustom.frame = CGRect(x: xPostion, y: yPostion, width: elementWidth, height: elementHeight)
         
         // Make second segment selected
-        segmentedControlCustom.selectedSegmentIndex = 1
+        segmentedControlCustom.selectedSegmentIndex = 0
         
         //Change text color of UISegmentedControl
         segmentedControlCustom.tintColor = UIColor.yellow
@@ -177,7 +180,21 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     
     @objc func segmentedValueChanged(_ sender:UISegmentedControl!)
     {
-        print("Selected Segment Index is : \(sender.selectedSegmentIndex)")
+        switch sender.selectedSegmentIndex {
+        case 0:
+            filtered = SoundRepository.shared.getAllObjects()
+        case 1:
+            filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Alto") }
+        case 2:
+            filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Médio") }
+        case 3:
+            filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Baixo") }
+        default:
+            filtered = SoundRepository.shared.getAllObjects()
+            break
+        }
+        tableView.reloadData()
+        searchBar.text = ""
     }
     
     @objc func editList(){
@@ -185,7 +202,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         
         buttonEditOK = UIBarButtonItem(title: "OK", style: UIBarButtonItem.Style.plain, target: self, action: #selector(okList))
         navigationItem.leftBarButtonItem = buttonEditOK!
-    
+        
         tableView.reloadData()
     }
     
@@ -203,6 +220,19 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         let vc = UINavigationController(rootViewController: root)
         vc.modalPresentationStyle = .automatic
         root.isDismissed = { [weak self] in
+            switch self?.segmentedControlCustom.selectedSegmentIndex {
+            case 0:
+                self?.filtered = SoundRepository.shared.getAllObjects()
+            case 1:
+                self?.filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Alto") }
+            case 2:
+                self?.filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Médio") }
+            case 3:
+                self?.filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Baixo") }
+            default:
+                self?.filtered = SoundRepository.shared.getAllObjects()
+                break
+            }
             self?.tableView.reloadData()
         }
         present(vc, animated: true)
@@ -210,7 +240,25 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     
     
     func searchBar(_ searchBar: UISearchBar, textDidChange textSearched: String) {
-        
+        if textSearched.isEmpty {
+            switch segmentedControlCustom.selectedSegmentIndex {
+            case 0:
+                filtered = SoundRepository.shared.getAllObjects()
+            case 1:
+                filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Alto") }
+            case 2:
+                filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Médio") }
+            case 3:
+                filtered = SoundRepository.shared.getAllObjects().filter { $0.classificacao!.contains("Baixo") }
+            default:
+                filtered = SoundRepository.shared.getAllObjects()
+                break
+            }
+            tableView.reloadData()
+        } else {
+            filtered = filtered.filter { $0.nome?.lowercased().contains(textSearched.lowercased()) as! Bool }
+        }
+        tableView.reloadData()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -275,11 +323,12 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return SoundRepository.shared.getAllObjects().count
+        return filtered.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let objetos = SoundRepository.shared.getAllObjects()
+        let objetos = filtered
+
         let imagePath = getDocumentsDirectory().appendingPathComponent(objetos[indexPath.row].imageName ?? "")
         
         if self.type == .home {
@@ -290,7 +339,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
             cell.titleLabel.text = objetos[indexPath.row].nome
             cell.imageCell.image = UIImage(contentsOfFile: imagePath.path)
             cell.timeLabel.text = objetos[indexPath.row].horarioUso
-            cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao!)"
+            cell.infoSoundLabel.text = "\(objetos[indexPath.row].intensidade) | \(objetos[indexPath.row].classificacao ?? "")"
             return cell
         }
         
@@ -317,7 +366,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         let vc = UINavigationController(rootViewController: root)
         vc.modalPresentationStyle = .automatic
         
-        let objeto = SoundRepository.shared.getAllObjects()[sender.tag]
+        let objeto = filtered[sender.tag]
         root.objeto = objeto
         root.isDismissed = { [weak self] in
             self?.tableView.reloadData()
@@ -330,7 +379,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         ac.addAction(UIAlertAction(title: "Deletar", style: .destructive, handler: {
             action in
             
-            SoundRepository.shared.deleteObject(object: SoundRepository.shared.getAllObjects()[sender.tag])
+            SoundRepository.shared.deleteObject(object: self.filtered[sender.tag])
+            self.filtered.remove(at: sender.tag)
             self.tableView.reloadData()
         }))
         ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
@@ -351,7 +401,8 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
             ac.addAction(UIAlertAction(title: "Deletar", style: .destructive, handler: {
                 action in
                 
-                SoundRepository.shared.deleteObject(object: SoundRepository.shared.getAllObjects()[indexPath.row])
+                SoundRepository.shared.deleteObject(object: self.filtered[indexPath.row])
+                self.filtered.remove(at: indexPath.row)
                 tableView.reloadData()
             }))
             ac.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
@@ -367,7 +418,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
             let vc = UINavigationController(rootViewController: root)
             vc.modalPresentationStyle = .automatic
             
-            let objeto = SoundRepository.shared.getAllObjects()[indexPath.row]
+            let objeto = self.filtered[indexPath.row]
             root.objeto = objeto
             root.isDismissed = { [weak self] in
                 self?.tableView.reloadData()
