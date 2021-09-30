@@ -97,7 +97,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
         decibelSpace.isHidden = true
         
         indicatorLabel.textColor = UIColor(named: "textColor")
-        indicatorLabel.font = .systemFont(ofSize: 20, weight: .regular)
+        indicatorLabel.font = .systemFont(ofSize: 25, weight: .regular)
         
         highLabel.text = "Alto"
         highLabel.textColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
@@ -161,15 +161,15 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
             try recordingSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
             recordingSession.requestRecordPermission() { allowed in
                 DispatchQueue.main.async {
-                    if allowed {
-                        print("allowed")
-                    } else {
-                        print("Erro ao tentar gravar")
-                    }
+//                    if allowed {
+//                        print("allowed")
+//                    } else {
+//                        print("Erro ao tentar gravar")
+//                    }
                 }
             }
         } catch {
-            print("Erro ao tentar gravar")
+            //print("Erro ao tentar gravar")
         }
         
         medirDecibel()
@@ -519,7 +519,6 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
             decibel -= minDb
         }
         
-        print(decibel)
         valores.append(decibel)
         indicatorLabel.text = "\(Int(decibel))"
         changeColor(decibel: (Int(decibel)))

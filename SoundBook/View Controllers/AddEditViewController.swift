@@ -141,7 +141,7 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         view.addSubview(horarioCardLabel)
         
-        decibelsLabel.text = "Decibéis"
+        decibelsLabel.text = "Intensidade"
         view.addSubview(decibelsLabel)
         
         classificacaoLabel.text = "Classificação"
@@ -200,15 +200,15 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             try recordingSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
             recordingSession.requestRecordPermission() { allowed in
                 DispatchQueue.main.async {
-                    if allowed {
-                        print("allowed")
-                    } else {
-                        print("Erro ao tentar gravar")
-                    }
+//                    if allowed {
+//                        print("allowed")
+//                    } else {
+//                        print("Erro ao tentar gravar")
+//                    }
                 }
             }
         } catch {
-            print("Erro ao tentar gravar")
+            //print("Erro ao tentar gravar")
         }
     }
     
@@ -443,8 +443,6 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             soma += i
         }
         
-        print(valores)
-        
         if soma/Float(valores.count) > 0 {
             intensidadeObjeto = Int64(soma/Float(valores.count))
             if intensidadeObjeto! >= 65 {
@@ -487,7 +485,6 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             decibel -= minDb
         }
         
-        print(decibel)
         valores.append(decibel)
     }
     
