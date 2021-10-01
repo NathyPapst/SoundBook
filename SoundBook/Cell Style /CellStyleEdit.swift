@@ -13,6 +13,7 @@ class CellStyleEdit: UITableViewCell {
         let image = UIImageView()
         image.backgroundColor = .systemBlue
         image.clipsToBounds = true
+        image.contentMode = .scaleAspectFill
         return image
     }()
     var titleLabel: UILabel = {

@@ -261,6 +261,7 @@ class HomeScreenViewController: UIViewController, UISearchBarDelegate, UITableVi
                 self?.filtered = SoundRepository.shared.getAllObjects()
                 break
             }
+            
             self?.tableView.reloadData()
             self?.medirDecibel()
         }
