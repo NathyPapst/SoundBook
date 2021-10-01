@@ -299,11 +299,13 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             microfone.image = UIImage(systemName: "mic")
             startRecording()
+            circle.tintColor = UIColor(red: 237.0/255.0, green: 85.0/255.0, blue: 75.0/255.0, alpha: 1.0)
             self.generatorNotification.notificationOccurred(.success)
         } else {
             
             microfone.image = UIImage(systemName: "mic.slash")
             finishRecording(success: true)
+            circle.tintColor = UIColor(named: "orangeColor")
             self.generatorNotification.notificationOccurred(.error)
             
         }
@@ -447,10 +449,10 @@ class AddEditViewController: UIViewController, UITableViewDelegate, UITableViewD
             intensidadeObjeto = Int64(soma/Float(valores.count))
             if intensidadeObjeto! >= 65 {
                 classificacaoObjeto = "Alto"
-                horarioObjeto = "9h - 22h"
+                horarioObjeto = "09h - 22h"
             } else if intensidadeObjeto! >= 50 {
                 classificacaoObjeto = "Médio"
-                horarioObjeto = "9h - 22h"
+                horarioObjeto = "09h - 22h"
             } else {
                 classificacaoObjeto = "Baixo"
                 horarioObjeto = "00h - 24h"
